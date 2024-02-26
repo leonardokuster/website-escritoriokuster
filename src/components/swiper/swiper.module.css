@@ -1,0 +1,85 @@
+.swiper {
+    width: 100vw;
+    height: auto;
+    background-color: var(--cordestaque);
+    margin: 20px;
+    padding-bottom: 30px;
+    padding-top: 30px;
+    display: flex;
+}
+
+.swiperCard {
+    position: relative;
+    text-align: center;
+    background-color: white;
+    min-height: 380px;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 220px;
+}
+
+.titulo-carrossel {
+    color: var(--cordestaque);
+    font-size: 1em;
+    text-align: center;
+    padding: 20px 5px;
+    min-height: 10%;
+}
+
+.paragrafo-carrossel {
+    color: #000000;
+    text-align: left;
+    font-size: 0.875em;
+    padding: 0px 20px;
+    line-height: 20px;
+    margin-bottom: 110px;
+}
+
+.swiperBtn {
+    position: absolute; 
+    bottom: 20px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    font-size: 1.0625em;
+    border-radius: 30px;
+    padding: 15px 30px;
+    background-color: var(--cordestaque);
+    color: white;
+    border: none;
+}
+
+.swiperBtn:hover {
+    background-color: #070e26ea;
+    font-weight: bolder;
+    cursor: pointer;
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .swiperCard {
+        min-height: 400px;
+    }
+
+    .titulo-carrossel {
+        padding: 20px 0px;
+    }
+
+    .paragrafo-carrossel {
+        line-height: 25px;
+    }
+}
+
+@media (min-width: 1025px) {
+    .swiperCard {
+        min-height: 400px;
+    }
+
+    .titulo-carrossel {
+        padding: 20px 0px;
+    }
+
+    .paragrafo-carrossel {
+        line-height: 30px;
+    }
+}

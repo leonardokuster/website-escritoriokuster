@@ -1,0 +1,39 @@
+.card {
+    background-color: lightgray;
+    border-radius: 15px;
+    margin: 5px 0px;
+    padding: 5px 10px;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    gap: 10px;
+    height: auto;
+}
+
+.description {
+    text-align: justify;
+    font-size: 0.875em;
+    padding-bottom: 5px;
+    font-style: italic;
+    color: black;
+}
+
+.personalInfo {
+    font-size: 0.6875em;
+    font-weight: bolder;
+    text-align: end;
+    padding-left: 5px;
+    color: black;
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .description {
+        font-size: 0.9375em;
+    }
+}
+
+@media (min-width: 1025px) {
+    .description {
+        font-size: 0.9375em;
+    }
+}

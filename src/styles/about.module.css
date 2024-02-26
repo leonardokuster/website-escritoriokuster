@@ -1,0 +1,41 @@
+.about {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.paragrafo {
+    text-align: left;
+    padding: 10px 0px;
+}
+
+@media (min-width: 768px) and (max-width: 1024px){ 
+    .about {
+        justify-content: space-evenly;
+    }
+
+    .texto {
+        width: 100%;
+    }
+
+    .elementos {
+        flex-direction: row;
+    }
+}
+
+@media (min-width: 1025px) {
+    .about {
+        flex-direction: row;
+    }
+
+    .texto {
+        width: 100%;
+        line-height: 25px;
+    }
+
+    .elementos {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}

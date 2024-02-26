@@ -1,0 +1,14 @@
+.bttn {
+    font-size: 1.0625em;
+    border-radius: 30px;
+    padding: 15px 30px;
+    color: white;
+    background-color: var(--cordestaque);
+    border: none;
+    margin: 10px 0px;
+}
+
+.bttn:hover {
+    background-image: linear-gradient(to right, #070e26, #2a3457);
+    cursor: pointer;
+}

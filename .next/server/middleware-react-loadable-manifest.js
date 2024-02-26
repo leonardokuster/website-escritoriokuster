@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST="{\"..\\\\components\\\\feedback\\\\FeedbackCard.js -> next/image\":{\"id\":\"..\\\\components\\\\feedback\\\\FeedbackCard.js -> next/image\",\"files\":[]},\"..\\\\screens\\\\Home.js -> next/image\":{\"id\":\"..\\\\screens\\\\Home.js -> next/image\",\"files\":[]}}"
