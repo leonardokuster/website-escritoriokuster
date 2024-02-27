@@ -29,6 +29,7 @@ const validationSchema = yup.object({
 })
 
 const services = [
+    { value: '', label: '' },
     {value: 'Abertura de empresa', label: 'Abertura de empresa'},
     {value: 'Assessoria trabalhista', label: 'Assessoria trabalhista'},
     {value: 'Encerramento de empresa', label: 'Encerramento de empresa'},
@@ -77,7 +78,6 @@ export default function Form({ showSecondTextField, showSecondButton, secondButt
             name="subject"
             label="Selecione um serviço"
             select
-            focused 
             variant="standard"
             value= {formik.values.subject}
             onChange= {formik.handleChange}
