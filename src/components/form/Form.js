@@ -29,7 +29,7 @@ const validationSchema = yup.object({
 })
 
 const services = [
-    { value: '', label: '' },
+    {value: '', label: ''},
     {value: 'Abertura de empresa', label: 'Abertura de empresa'},
     {value: 'Assessoria trabalhista', label: 'Assessoria trabalhista'},
     {value: 'Encerramento de empresa', label: 'Encerramento de empresa'},
