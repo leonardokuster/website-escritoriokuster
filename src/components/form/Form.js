@@ -9,8 +9,7 @@ import axios from 'axios';
 
 const validationSchema = yup.object({
     subject: yup
-    .string('Selecione um serviço')
-    .required('Por favor, selecione um serviço'),
+    .string('Selecione um serviço'),
     fullname: yup
     .string('Insira seu nome completo')
     .required('Campo obrigatório'),
@@ -61,7 +60,7 @@ export default function Form({ showSecondTextField, showSecondButton, secondButt
             } catch (err) {
               setMessage(err.response.data.message);
             }
-          },
+        },
     });
 
     const secondButton = showSecondButton ? (
@@ -94,10 +93,8 @@ export default function Form({ showSecondTextField, showSecondButton, secondButt
         </TextField>
     ) : null;
     
-
     return(
         <form onSubmit={formik.handleSubmit} className={styles['formulario']}>
-            {message ? <p>{message}</p> : ''}
             {secondTextField}
             <TextField
                 id="fullname"
@@ -149,6 +146,7 @@ export default function Form({ showSecondTextField, showSecondButton, secondButt
                 error={formik.touched.content && Boolean(formik.errors.content)}
                 helperText={formik.touched.content && formik.errors.content}
             />
+            {message ? <h3 style={{ fontSize: '0.84em', color: '#202949', textAlign: 'left'}}>{message}</h3> : ''}
             <div className={styles['elementos']}>
                 {secondButton}
                 <Button className={styles['botao']} type= "submit" variant= "contained" sx={{ color: 'white', backgroundColor: '#070E26', borderRadius: '30px', height: '50px', marginTop: '20px', width: buttonWidth }}>
