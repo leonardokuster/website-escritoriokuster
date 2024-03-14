@@ -53,7 +53,7 @@ export default function Form({ showSecondTextField, showSecondButton, secondButt
         onSubmit: async (values, { resetForm }) => {
             console.log(values)
             try {
-              const response = await axios.post('http://localhost:8080/message', values, {
+              const response = await axios.post('https://api-escritoriokuster.vercel.app/solicitation', values, {
                 headers: { 'Content-Type': 'application/json' },
               });
               setMessage(response.data.message);
