@@ -80,7 +80,7 @@ export default function Header() {
                         <Link href="/budget" className={styles['link-orcamento']}>
                             <MenuItem onClick={handleClose} sx={{ borderBottom: '1px solid #070e2636', width: '45vw', justifyContent: 'center', paddingRight: '16px', '&:hover': { backgroundColor: '#070e2636', color: 'black' } }}>Orçamento</MenuItem>
                         </Link>
-                        <Link href="" className={styles['link-menu']} style={{ borderLeft: { xs: 'none', md: '1px solid white' } }}>
+                        <Link href="/login" className={styles['link-menu']} style={{ borderLeft: { xs: 'none', md: '1px solid white' } }}>
                             <MenuItem onClick={handleClose} sx={{ width: '45vw',fontWeight: 'bold' , justifyContent: 'center', paddingRight: '16px', '&:hover': { backgroundColor: '#070e2636', color: 'black' } }}>Área do cliente</MenuItem>
                         </Link>
                     </Menu>
@@ -97,7 +97,7 @@ export default function Header() {
                         <Link href="/services" className={styles['link-menu']}><Button color="inherit">Soluções</Button></Link>
                         <Link href="/contact" className={styles['link-menu']}><Button color="inherit">Contato</Button></Link>
                         <Link href="/budget" className={styles['link-orcamento']}><Button color="inherit">Orçamento</Button></Link>
-                        <Link href="" className={styles['link-cliente']} style={{ borderLeft: "1px solid white" }}><Button color="inherit">Área do cliente</Button></Link>
+                        <Link href="/login" className={styles['link-cliente']} style={{ borderLeft: "1px solid white" }}><Button color="inherit">Área do cliente</Button></Link>
                     </Box>
                 </Toolbar>
             </AppBar>

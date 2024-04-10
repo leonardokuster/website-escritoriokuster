@@ -27,7 +27,7 @@ export default function Footer() {
             <Link href="/budget">
                 <p className={styles['paragrafo']}>Orçamento</p>
             </Link>
-            <Link href="">
+            <Link href="/login">
                 <p className={styles['paragrafo']}>Área do cliente</p>
             </Link>
         </div>

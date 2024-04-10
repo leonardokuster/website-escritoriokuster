@@ -57,7 +57,7 @@ export default function Home() {
                 </div>
                 <div>
                     <Suspense fallback={<Skeleton animation="wave" variant="rounded" width={380} height={460} />}>
-                        <Image src="/images/img-inicial.webp" alt="Homem subindo escada de investimentos" className="desktop-image" width={692} height={360} priority={true}/>
+                        <Image src="/images/img-inicial.webp" alt="Grupo de pessoas trabalhando" className="desktop-image" width={692} height={360} priority={true}/>
                         <Image src="/images/img-inicial-tablet.webp" alt="Homem no topo de uma montanha puxando um empresário" className="tablet-image" width={379} height={459} priority={true}/>
                     </Suspense>
                 </div>
