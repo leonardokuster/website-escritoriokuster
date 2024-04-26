@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import * as yup from 'yup';
-import styles from '../loginform/loginform.module.css';
+import styles from '../loginForm/loginform.module.css';
 import Link from 'next/link';
 import axios from 'axios';
 import { motion } from "framer-motion";
