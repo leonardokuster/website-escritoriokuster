@@ -1,0 +1,17 @@
+.formulario {
+    display: flex;
+    flex-direction: column;
+}
+
+.botao {
+    color: white;
+    background-color: #070E26;
+    border-radius: 30px;
+    height: 50px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.formulario-hidden {
+    display: none;
+}

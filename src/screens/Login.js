@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
-import styles from '../styles/contact.module.css';
-import Skeleton from '@mui/material/Skeleton';
+import styles from '../styles/login.module.css';
 import Image from 'next/image';
+import LoginForm from '../components/loginForm/LoginForm'
 
 export default function Login() {
     const [width, setWidth] = React.useState(0);
@@ -19,12 +19,11 @@ export default function Login() {
 
     return (
       <>
-        <main className={styles['login']}>
-            <div>
-                <Suspense fallback={<Skeleton animation="wave" variant="rounded" width={380} height={460} />}>
-                    <Image src="/images/construcao.webp" alt="Trabalhador carregando caixas" layout="responsive" width={width} height={height} priority={true}/>
-                    <h2 >Em construção...</h2>
-                </Suspense>
+        <main>
+            <div className={styles['login']}>
+                <LoginForm/>
+                <Image src="/images/login.png" alt="Mãos mexendo no celular" className="desktop-image" width={400} height={400} priority={true}/>
+                <Image src="/images/login.png" alt="Mãos mexendo no celular" className="tablet-image" width={400} height={400} priority={true}/>
             </div>
         </main>
       </>
