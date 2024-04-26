@@ -68,7 +68,6 @@ export default function Form() {
             initial={{ opacity: 0, x: -100 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            style={{width: '25vw'}}
         >
             <h2>Seja bem-vindo(a) ao portal do cliente!</h2>
             <form onSubmit={formik.handleSubmit} className={styles['formulario']}>
@@ -114,7 +113,6 @@ export default function Form() {
             initial={{ opacity: 0, x: 100 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            style={{width: '25vw'}}
         >
             <h2>Preencha os dados abaixo e cadastre-se agora mesmo!</h2>
             <form onSubmit={formik.handleSubmit} className={styles['formulario']}>

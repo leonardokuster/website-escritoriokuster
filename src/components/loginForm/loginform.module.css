@@ -15,3 +15,20 @@
 .formulario-hidden {
     display: none;
 }
+
+#loginForm, #signupForm {
+    width: 80vw;
+}
+
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    #loginForm, #signupForm {
+        width: 25vw;
+    }
+}
+
+@media (min-width: 1025px) {
+    #loginForm, #signupForm {
+        width: 25vw;
+    }
+}
