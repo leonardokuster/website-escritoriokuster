@@ -4,7 +4,6 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import * as yup from 'yup';
 import styles from '../login/signupform.module.css';
-import Link from 'next/link';
 import axios from 'axios';
 import { motion } from "framer-motion";
 
@@ -12,15 +11,25 @@ const validationSchema = yup.object({
     nome: yup
     .string('Nome de usuário')
     .matches(/^[a-zA-Z0-9]+$/, 'Nome de usuário inválido, por favor tente outro')
+    .test('verificaNome', 'Nome de usuário já existe', async (value) => {
+        if (!value) return true; 
+        const response = await axios.post('http://localhost:5656/verificarNome', { nome: value });
+        return !response.data.error; 
+    })
     .required('Campo obrigatório'),
     email: yup
     .string('E-mail')
     .email('Insira um e-mail válido')
     .matches(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i, 'Insira um e-mail válido')
+    .test('verificaEmail', 'E-mail cadastrado, faça o login', async (value) => {
+        if (!value) return true; 
+        const response = await axios.post('http://localhost:5656/verificarEmail', { email: value });
+        return !response.data.error; 
+    })
     .required('Campo obrigatório'),
     senha: yup
     .string('Senha')
-    .max(24, 'Senha muito longa')
+    .min(5, 'Senha deve conter pelo menos 5 dígitos')
     .required('Campo obrigatório'),
     confisenha: yup
     .string('Confirmar senha')
