@@ -1,0 +1,34 @@
+.formulario {
+    display: flex;
+    flex-direction: column;
+}
+
+.botao {
+    color: white;
+    background-color: #070E26;
+    border-radius: 30px;
+    height: 50px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.formulario-hidden {
+    display: none;
+}
+
+#loginForm, #signupForm {
+    width: 80vw;
+}
+
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    #loginForm, #signupForm {
+        width: 25vw;
+    }
+}
+
+@media (min-width: 1025px) {
+    #loginForm, #signupForm {
+        width: 25vw;
+    }
+}

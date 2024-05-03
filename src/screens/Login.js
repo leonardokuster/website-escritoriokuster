@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import styles from '../styles/login.module.css';
 import Image from 'next/image';
-import LoginForm from '../components/loginForm/LoginForm'
+import LoginPage from '../components/login/LoginPage'
 
 export default function Login() {
     const [width, setWidth] = React.useState(0);
@@ -21,9 +21,9 @@ export default function Login() {
       <>
         <main>
             <div className={styles['login']}>
-                <LoginForm/>
-                <Image src="/images/login.png" alt="Mãos mexendo no celular" className="desktop-image" width={400} height={400} priority={true}/>
-                <Image src="/images/login.png" alt="Mãos mexendo no celular" className="tablet-image" width={400} height={400} priority={true}/>
+                <LoginPage/>
+                <Image src="/images/login.png" alt="Mãos mexendo no celular" className="desktop-image" width={400} height={400}/>
+                <Image src="/images/login.png" alt="Mãos mexendo no celular" className="tablet-image" width={400} height={400}/>
             </div>
         </main>
       </>
