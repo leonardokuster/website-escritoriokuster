@@ -49,6 +49,25 @@ export default function Form() {
                 }
         },
     });
+
+    const handleBlur = async (fieldName, fieldValue) => {
+        if (fieldValue) {
+            try {
+                const response = await axios.post('https://api-login-self.vercel.app/escritoriokuster/salvarcadastro',
+                    { [fieldName]: fieldValue },
+                    { headers: { 'Content-Type': 'application/json' } });
+
+                if (response.data.error) {
+                    setMessage(`${fieldName === 'nome' ? 'Nome de usuário' : 'E-mail'} já existe`);
+                } else {
+                    setMessage('');
+                }
+            } catch (error) {
+                console.error(`Erro ao verificar ${fieldName}:`, error);
+                setMessage(`Erro ao verificar ${fieldName}`);
+            }
+        }
+    };
    
     return(
         <motion.div
@@ -67,28 +86,9 @@ export default function Form() {
                     variant="standard"
                     value= {formik.values.nome}
                     onChange= {formik.handleChange}
+                    onBlur={() => handleBlur('nome', formik.values.nome)}
                     error= {formik.touched.nome && Boolean(formik.errors.nome)}
                     helperText= {formik.touched.nome && formik.errors.nome}
-                    onBlur={() => {
-                        formik.handleBlur('nome');
-                        if (formik.values.nome) {
-                            axios.post('https://api-login-self.vercel.app/escritoriokuster/salvarcadastro', 
-                                { nome: formik.values.nome },
-                                { headers: { 'Content-Type': 'application/json' } })
-                                .then(response => {
-                                    if (response.data.error) {
-                                        setMessage('Nome de usuário já existe');
-                                    } else {
-                                        setMessage('');
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('Erro ao verificar nome de usuário:', error);
-                                    setMessage('Erro ao verificar nome de usuário');
-                                });
-                        }
-                    }}
-                                         
                 />
                 <TextField
                     id="email"
@@ -98,27 +98,9 @@ export default function Form() {
                     variant="standard"
                     value= {formik.values.email}
                     onChange= {formik.handleChange}
+                    onBlur={() => handleBlur('email', formik.values.email)}
                     error= {formik.touched.email && Boolean(formik.errors.email)}
                     helperText= {formik.touched.email && formik.errors.email}
-                    onBlur={() => {
-                        formik.handleBlur('email');
-                        if (formik.values.email) {
-                            axios.post('https://api-login-self.vercel.app/escritoriokuster/salvarcadastro', 
-                            { email: formik.values.email },
-                            { headers: { 'Content-Type': 'application/json' } })
-                                .then(response => {
-                                    if (response.data.error) {
-                                        setMessage('E-mail já cadastrado, faça o login');
-                                    } else {
-                                        setMessage('');
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error('Erro ao verificar e-mail:', error);
-                                    setMessage('Erro ao verificar e-mail');
-                                });
-                        }
-                    }}
                 />
                 <TextField
                     id="senha"
