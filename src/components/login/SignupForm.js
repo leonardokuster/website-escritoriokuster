@@ -11,39 +11,11 @@ const validationSchema = yup.object({
     nome: yup
     .string('Nome de usuário')
     .matches(/^[a-zA-Z0-9]+$/, 'Nome de usuário inválido, por favor tente outro')
-    .test('verificarNome', 'Nome de usuário já existe', async (value) => {
-        if (!value) return true; 
-        try {
-            const response = await axios.post('https://api-login-self.vercel.app/escritoriokuster/salvarcadastro', 
-                { nome: value },
-                { headers: { 'Content-Type': 'application/json' }
-            });
-    
-            return !response.data.error;
-        } catch (error) {
-            console.error("Erro ao verificar nome de usuário:", error);
-            return false; 
-        }
-    })    
     .required('Campo obrigatório'),
     email: yup
     .string('E-mail')
     .email('Insira um e-mail válido')
     .matches(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i, 'Insira um e-mail válido')
-    .test('verificarEmail', 'E-mail cadastrado, faça o login', async (value) => {
-        if (!value) return true; 
-        try {
-            const response = await axios.post('https://api-login-self.vercel.app/escritoriokuster/salvarcadastro', 
-                { email: value },
-                { headers: { 'Content-Type': 'application/json' }
-            });
-    
-            return !response.data.error;
-        } catch (error) {
-            console.error("Erro ao verificar e-mail:", error);
-            return false; 
-        }
-    })    
     .required('Campo obrigatório'),
     senha: yup
     .string('Senha')
@@ -98,6 +70,25 @@ export default function Form() {
                     onBlur= {formik.handleBlur}
                     error= {formik.touched.nome && Boolean(formik.errors.nome)}
                     helperText= {formik.touched.nome && formik.errors.nome}
+                    onBlur={() => {
+                        formik.handleBlur('nome');
+                        if (formik.values.nome) {
+                            axios.post('https://api-login-self.vercel.app/escritoriokuster/salvarcadastro', 
+                            { nome: formik.values.nome },
+                            { headers: { 'Content-Type': 'application/json' } })
+                                .then(response => {
+                                    if (response.data.error) {
+                                        setMessage('Nome de usuário já existe');
+                                    } else {
+                                        setMessage('');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Erro ao verificar nome de usuário:', error);
+                                    setMessage('Erro ao verificar nome de usuário');
+                                });
+                        }
+                    }}                            
                 />
                 <TextField
                     id="email"
@@ -110,6 +101,25 @@ export default function Form() {
                     onBlur= {formik.handleBlur}
                     error= {formik.touched.email && Boolean(formik.errors.email)}
                     helperText= {formik.touched.email && formik.errors.email}
+                    onBlur={() => {
+                        formik.handleBlur('email');
+                        if (formik.values.email) {
+                            axios.post('https://api-login-self.vercel.app/escritoriokuster/salvarcadastro', 
+                            { nome: formik.values.email },
+                            { headers: { 'Content-Type': 'application/json' } })
+                                .then(response => {
+                                    if (response.data.error) {
+                                        setMessage('E-mail já cadastrado, faça o login');
+                                    } else {
+                                        setMessage('');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Erro ao verificar e-mail:', error);
+                                    setMessage('Erro ao verificar e-mail');
+                                });
+                        }
+                    }}
                 />
                 <TextField
                     id="senha"
