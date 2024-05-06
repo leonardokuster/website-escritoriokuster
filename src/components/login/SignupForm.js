@@ -67,15 +67,14 @@ export default function Form() {
                     variant="standard"
                     value= {formik.values.nome}
                     onChange= {formik.handleChange}
-                    onBlur= {formik.handleBlur}
                     error= {formik.touched.nome && Boolean(formik.errors.nome)}
                     helperText= {formik.touched.nome && formik.errors.nome}
                     onBlur={() => {
                         formik.handleBlur('nome');
                         if (formik.values.nome) {
                             axios.post('https://api-login-self.vercel.app/escritoriokuster/salvarcadastro', 
-                            { nome: formik.values.nome },
-                            { headers: { 'Content-Type': 'application/json' } })
+                                { nome: formik.values.nome },
+                                { headers: { 'Content-Type': 'application/json' } })
                                 .then(response => {
                                     if (response.data.error) {
                                         setMessage('Nome de usuário já existe');
@@ -88,7 +87,8 @@ export default function Form() {
                                     setMessage('Erro ao verificar nome de usuário');
                                 });
                         }
-                    }}                            
+                    }}
+                                         
                 />
                 <TextField
                     id="email"
@@ -98,7 +98,6 @@ export default function Form() {
                     variant="standard"
                     value= {formik.values.email}
                     onChange= {formik.handleChange}
-                    onBlur= {formik.handleBlur}
                     error= {formik.touched.email && Boolean(formik.errors.email)}
                     helperText= {formik.touched.email && formik.errors.email}
                     onBlur={() => {
