@@ -104,7 +104,7 @@ export default function Form() {
                         formik.handleBlur('email');
                         if (formik.values.email) {
                             axios.post('https://api-login-self.vercel.app/escritoriokuster/salvarcadastro', 
-                            { nome: formik.values.email },
+                            { email: formik.values.email },
                             { headers: { 'Content-Type': 'application/json' } })
                                 .then(response => {
                                     if (response.data.error) {
