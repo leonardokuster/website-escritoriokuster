@@ -13,7 +13,7 @@ const validationSchema = yup.object({
     .matches(/^[a-zA-Z0-9]+$/, 'Nome de usuário inválido, por favor tente outro')
     .test('verificaNome', 'Nome de usuário já existe', (value) => {
         if (!value) return true; 
-        return axios.post('https://api-login-self.vercel.app/escritoriokuster/salvarcadastro', { nome: value })
+        return axios.post('https://api-login-self.vercel.app/escritoriokuster/verificarNome', { nome: value })
             .then(response => !response.data.error);
     })
     .required('Campo obrigatório'),
@@ -23,7 +23,7 @@ const validationSchema = yup.object({
     .matches(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i, 'Insira um e-mail válido')
     .test('verificaEmail', 'E-mail cadastrado, faça o login', (value) => {
         if (!value) return true; 
-        return axios.post('https://api-login-self.vercel.app/escritoriokuster/salvarcadastro', { email: value })
+        return axios.post('https://api-login-self.vercel.app/escritoriokuster/verificarEmail', { email: value })
             .then(response => !response.data.error);
     })
     .required('Campo obrigatório'),
