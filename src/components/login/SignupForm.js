@@ -11,7 +11,7 @@ const validationSchema = yup.object({
     nome: yup
     .string('Nome de usuário')
     .matches(/^[a-zA-Z0-9]+$/, 'Nome de usuário inválido, por favor tente outro')
-    .test('verificaNome', 'Nome de usuário já existe', (value) => {
+    .test('verificarNome', 'Nome de usuário já existe', (value) => {
         if (!value) return true; 
         return axios.post('https://api-login-self.vercel.app/escritoriokuster/verificarNome', { nome: value })
             .then(response => !response.data.error);
@@ -21,7 +21,7 @@ const validationSchema = yup.object({
     .string('E-mail')
     .email('Insira um e-mail válido')
     .matches(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i, 'Insira um e-mail válido')
-    .test('verificaEmail', 'E-mail cadastrado, faça o login', (value) => {
+    .test('verificarEmail', 'E-mail cadastrado, faça o login', (value) => {
         if (!value) return true; 
         return axios.post('https://api-login-self.vercel.app/escritoriokuster/verificarEmail', { email: value })
             .then(response => !response.data.error);
