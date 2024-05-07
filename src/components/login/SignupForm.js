@@ -39,7 +39,7 @@ export default function Form() {
         validationSchema: validationSchema,
         onSubmit: async (values, { resetForm }) => {
             try {
-                const response = await axios.post('https://api-login-self.vercel.app/escritoriokuster/salvarcadastro', values, {
+                const response = await axios.post('http://localhost:5656/escritoriokuster/register', values, {
                     headers: { 'Content-Type': 'application/json' },
                 });
                 setMessage(response.data.message);
@@ -49,26 +49,7 @@ export default function Form() {
                 }
         },
     });
-
-    const handleBlur = async (fieldName, fieldValue) => {
-        if (fieldValue) {
-            try {
-                const response = await axios.post('https://api-login-self.vercel.app/escritoriokuster/salvarcadastro',
-                    { [fieldName]: fieldValue },
-                    { headers: { 'Content-Type': 'application/json' } });
-
-                if (response.data.error) {
-                    setMessage(`${fieldName === 'nome' ? 'Nome de usuário' : 'E-mail'} já existe`);
-                } else {
-                    setMessage('');
-                }
-            } catch (error) {
-                console.error(`Erro ao verificar ${fieldName}:`, error);
-                setMessage(`Erro ao verificar ${fieldName}`);
-            }
-        }
-    };
-   
+      
     return(
         <motion.div
             className={styles['signupform']}
@@ -86,7 +67,7 @@ export default function Form() {
                     variant="standard"
                     value= {formik.values.nome}
                     onChange= {formik.handleChange}
-                    onBlur={() => handleBlur('nome', formik.values.nome)}
+                    onBlur= {formik.handleBlur}
                     error= {formik.touched.nome && Boolean(formik.errors.nome)}
                     helperText= {formik.touched.nome && formik.errors.nome}
                 />
@@ -98,7 +79,7 @@ export default function Form() {
                     variant="standard"
                     value= {formik.values.email}
                     onChange= {formik.handleChange}
-                    onBlur={() => handleBlur('email', formik.values.email)}
+                    onBlur= {formik.handleBlur}
                     error= {formik.touched.email && Boolean(formik.errors.email)}
                     helperText= {formik.touched.email && formik.errors.email}
                 />
@@ -126,7 +107,8 @@ export default function Form() {
                     error= {formik.touched.confisenha && Boolean(formik.errors.confisenha)}
                     helperText= {formik.touched.confisenha && formik.errors.confisenha}
                 />
-                {message ? <h3 style={{ fontSize: '0.84em', color: '#202949', textAlign: 'left'}}>{message}</h3> : ''}
+                <br></br>
+                {message ? <h3 style={{ fontSize: '0.84em', color: '#202949', textAlign: 'left'}}><strong>{message}</strong></h3> : ''}
                 
                 <div>
                     <Button className={styles['botao']} type= "submit" variant= "contained">
