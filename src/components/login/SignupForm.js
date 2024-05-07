@@ -27,7 +27,7 @@ const validationSchema = yup.object({
     .required('Campo obrigatório'),
 })
 
-export default function Form() {
+export default function SignupForm() {
     const [message, setMessage] = useState('');
     const formik = useFormik({
         initialValues: {

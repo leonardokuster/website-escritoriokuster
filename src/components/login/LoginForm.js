@@ -19,8 +19,9 @@ const validationSchema = yup.object({
     .required('Campo obrigatório'),
 })
 
-export default function Form() {
+export default function LoginForm() {
     const [message, setMessage] = useState('');
+    const router = useRouter();
 
     const formik = useFormik({
         initialValues: {
@@ -35,9 +36,13 @@ export default function Form() {
                 });
                 setMessage(response.data.message);
                 resetForm();
-                } catch (err) {
-                setMessage(err.response.data.message);
+
+                if (response.status === 302) {
+                    router.push(response.headers.location);
                 }
+            } catch (err) {
+            setMessage(err.response.data.message);
+            }
         },
     });
   
