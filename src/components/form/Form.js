@@ -52,7 +52,7 @@ export default function Form({ showSecondTextField, showSecondButton, secondButt
         validationSchema: validationSchema,
         onSubmit: async (values, { resetForm }) => {
             try {
-              const response = await axios.post('https://api-formulario.vercel.app/solicitation', values, {
+              const response = await axios.post('https://api-formulario.vercel.app/contato', values, {
                 headers: { 'Content-Type': 'application/json' },
               });
               setMessage(response.data.message);
