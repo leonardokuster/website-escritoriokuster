@@ -22,8 +22,8 @@ export default function Login() {
         <main>
             <div className={styles['login']}>
                 <LoginPage/>
-                <Image src="/images/login.png" alt="Mãos mexendo no celular" className="desktop-image" width={400} height={400}/>
-                <Image src="/images/login.png" alt="Mãos mexendo no celular" className="tablet-image" width={400} height={400}/>
+                <Image src="/images/login.png" alt="Mãos mexendo no celular" className="desktop-image" width={400} height={400} fetchpriority="high"/>
+                <Image src="/images/login.png" alt="Mãos mexendo no celular" className="tablet-image" width={400} height={400} fetchpriority="high"/>
             </div>
         </main>
       </>

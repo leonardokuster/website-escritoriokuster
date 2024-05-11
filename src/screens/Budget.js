@@ -30,8 +30,8 @@ export default function Budget() {
                 </div>
                 <div>
                     <Suspense fallback={<Skeleton animation="wave" variant="rounded" width={400} height={420} />}>
-                        <Image src="/images/img-orcamento.webp" alt="Homem próximo a uma calculadora e prancheta, com um símbolo de dinheiro na mão" className="desktop-image" width={670} height={420} priority={true}/>
-                        <Image src="/images/img-orcamento-tablet.webp" alt="Homem sentado com representações de contabilidade em volta" className="tablet-image" width={400} height={413} priority={true}/>
+                        <Image src="/images/img-orcamento.webp" alt="Homem próximo a uma calculadora e prancheta, com um símbolo de dinheiro na mão" className="desktop-image" width={670} height={420} fetchpriority="high"/>
+                        <Image src="/images/img-orcamento-tablet.webp" alt="Homem sentado com representações de contabilidade em volta" className="tablet-image" width={400} height={413} fetchpriority="high"/>
                     </Suspense>
                 </div>
             </div>

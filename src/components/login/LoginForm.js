@@ -32,20 +32,34 @@ export default function LoginForm() {
         validationSchema: validationSchema,
         onSubmit: async (values, { resetForm }) => {
             try {
-                const response = await axios.post('https://api-login-leonardockuster.vercel.app/escritoriokuster/login', values, {
+                const response = await axios.post('https://api-login-self.vercel.app/usuario/login', values, {
                     headers: { 'Content-Type': 'application/json' },
                 });
-                setMessage(response.data.message);
                 resetForm();
-
-                if (response.status === 302) {
-                    router.push(response.headers.location);
+                setMessage('');
+        
+                if (response.status === 200) {
+                    router.push(response.data.redirectTo);
                 }
             } catch (err) {
-            setMessage(err.response.data.message);
+                console.log('Erro:', err);
+                if (err.response) {
+                    if (err.response.status === 401) {
+                        setMessage('Credenciais inválidas');
+                    } else {
+                        setMessage('Erro ao tentar fazer login');
+                    }
+                } else {
+                    setMessage('Erro ao tentar fazer login');
+                }
             }
-        },
+        },        
     });
+
+    const renderErrorMessage = () => {
+        return <h3 style={{ fontSize: '0.84em', color: '#202949', textAlign: 'left' }}>{message}</h3>;
+    };
+    
   
     return(
         <>
@@ -81,7 +95,7 @@ export default function LoginForm() {
                         error= {formik.touched.senha && Boolean(formik.errors.senha)}
                         helperText= {formik.touched.senha && formik.errors.senha}
                     />
-                    {message ? <h3 style={{ fontSize: '0.84em', color: '#202949', textAlign: 'left'}}>{message}</h3> : ''}
+                    {renderErrorMessage()}
                     <h3 style={{textAlign: 'end', textDecoration: 'none', fontSize: '0.8em'}}><Link href="/forgot"><strong>Esqueceu a senha?</strong></Link></h3>
                     <div>
                         <Button className={styles['botao']} type= "submit" variant= "contained">

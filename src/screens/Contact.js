@@ -10,8 +10,8 @@ export default function Contact() {
         <main className={styles['contato']}>
             <div>
                 <Suspense fallback={<Skeleton animation="wave" variant="rounded" width={253} height={440} />}>
-                    <Image src="/images/callcenter.webp" alt="Mulher atentendo telefone" className="desktop-image" width={500} height={441} priority={true}/>
-                    <Image src="/images/img-contato-tablet.webp" alt="Telefone recebendo mensagem" className="tablet-image" width={253} height={438} priority={true}/>
+                    <Image src="/images/callcenter.webp" alt="Mulher atentendo telefone" className="desktop-image" width={500} height={441} fetchpriority="high"/>
+                    <Image src="/images/img-contato-tablet.webp" alt="Telefone recebendo mensagem" className="tablet-image" width={253} height={438} fetchpriority="high"/>
                 </Suspense>
             </div>
                 

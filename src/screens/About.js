@@ -42,8 +42,8 @@ export default function About() {
 
             <div className={styles['elementos']}>
                 <Suspense fallback={<Skeleton animation="wave" variant="rounded" width={436} height={360} />}>
-                    <Image src="/images/img-escritorio.webp" alt="Homem sentado digitando no computador" className="desktop-image" width={1176} height={950} priority={true}/>
-                    <Image src="/images/img-escritorio-tablet.webp" alt="Representação de um escritório" className="tablet-image" width={436} height={354} priority={true}/>
+                    <Image src="/images/img-escritorio.webp" alt="Homem sentado digitando no computador" className="desktop-image" width={1176} height={950} fetchpriority="high"/>
+                    <Image src="/images/img-escritorio-tablet.webp" alt="Representação de um escritório" className="tablet-image" width={436} height={354} fetchpriority="high"/>
                 </Suspense>
                 <br />
                 <div>
