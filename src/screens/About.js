@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import Link from 'next/link';
 import Button from '../components/button/Button';
-import styles from '../styles/about.module.css';
+import styles from '../styles/screens/about.module.css';
 import Skeleton from '@mui/material/Skeleton';
 import Image from 'next/image';
 

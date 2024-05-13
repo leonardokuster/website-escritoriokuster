@@ -9,7 +9,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import Button from '@mui/material/Button';
 import Link from 'next/link';
-import styles from './header.module.css';
+import styles from '../../styles/components/header.module.css';
 import Image from 'next/image';
 import Divider from '@mui/material/Divider';
 

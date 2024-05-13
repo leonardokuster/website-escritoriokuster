@@ -5,7 +5,7 @@ import { FreeMode, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/pagination';
-import styles from './swiper.module.css';
+import styles from '../../styles/components/swiper.module.css';
 
 export default function ServiceSwiper() {
   return (

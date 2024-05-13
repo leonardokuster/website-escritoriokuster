@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import Typography from '@mui/material/Typography';
 import Link from 'next/link';
 import Button from '../button/Button';
-import styles from './responsivetabs.module.css';
+import styles from '../../styles/components/responsivetabs.module.css';
 
 
 function TabPanel(props) {

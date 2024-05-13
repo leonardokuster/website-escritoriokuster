@@ -1,4 +1,4 @@
-import styles from './feedbackcard.module.css';
+import styles from '../../styles/components/feedbackcard.module.css';
 import React, { Suspense } from 'react';
 import Skeleton from '@mui/material/Skeleton';
 

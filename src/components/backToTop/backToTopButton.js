@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import IconButton from '@mui/material/IconButton';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import styles from './backToTopButton.module.css';
+import styles from '../../styles/components/backToTopButton.module.css';
 
 export default function BackToTopButton() {
     const [isVisible, setIsVisible] = useState(false);

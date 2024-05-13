@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import * as yup from 'yup';
-import styles from '../formularios/signupform.module.css';
+import styles from '../../../styles/components/signupform.module.css';
 import axios from 'axios';
 import { motion } from "framer-motion";
 
