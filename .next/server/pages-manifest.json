@@ -2,8 +2,8 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/login": "pages/login.js",
-  "/": "pages/index.js",
-  "/contact": "pages/contact.js",
-  "/budget": "pages/budget.js"
+  "/private/user": "pages/private/user.js",
+  "/private/admin": "pages/private/admin.js",
+  "/private/collaborator": "pages/private/collaborator.js",
+  "/login": "pages/login.js"
 }

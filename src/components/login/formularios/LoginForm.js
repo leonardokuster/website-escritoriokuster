@@ -32,15 +32,29 @@ export default function LoginForm() {
         validationSchema: validationSchema,
         onSubmit: async (values, { resetForm }) => {
             try {
-                const response = await axios.post('https://api-login-self.vercel.app/usuario/login', values, {
+                const response = await axios.post('https://api-login-self.vercel.app/login', values, {
                     headers: { 'Content-Type': 'application/json' },
                 });
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('nome', response.data.usuario.nome);
+                localStorage.setItem('tipo', response.data.usuario.tipo);
                 resetForm();
-                setMessage('');
-        
-                if (response.status === 200) {
-                    router.push(response.data.redirectTo);
-                }
+                                
+                const userType = response.data.usuario.tipo;
+                switch (userType) {
+                    case 'admin':
+                        router.push('/private/admin');
+                        break;
+                    case 'collaborator':
+                        router.push('/private/collaborator');
+                        break;
+                    case 'user':
+                        router.push('/private/user');
+                        break;
+                    default:
+                        console.error('Tipo de usuário desconhecido:', userType);
+                        break;
+                }                         
             } catch (err) {
                 console.log('Erro:', err);
                 if (err.response) {
@@ -60,7 +74,6 @@ export default function LoginForm() {
         return <h3 style={{ fontSize: '0.84em', color: '#202949', textAlign: 'left' }}>{message}</h3>;
     };
     
-  
     return(
         <>
             <motion.div

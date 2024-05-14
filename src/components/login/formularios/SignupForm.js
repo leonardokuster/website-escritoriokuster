@@ -39,7 +39,7 @@ export default function SignupForm() {
         validationSchema: validationSchema,
         onSubmit: async (values, { resetForm }) => {
             try {
-                const response = await axios.post('https://api-login-self.vercel.app/usuario/cadastrar', values, {
+                const response = await axios.post('https://api-login-self.vercel.app/signup', values, {
                     headers: { 'Content-Type': 'application/json' },
                 });
                 setMessage(response.data.message);
