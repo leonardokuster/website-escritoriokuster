@@ -1,0 +1,44 @@
+.header {
+    display: flex;
+    background-color: var(--cordestaque);
+    color: white;
+    padding: 10px 24px;
+}
+
+.link-menu {
+    color: var(--cordestaque);
+    font-weight: bolder;
+}
+
+.link-menu:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+@media (min-width: 900px) and (max-width: 1024px){ 
+    .link-menu {
+        padding: 5px 7px;
+        width: auto;
+        color: white;
+    }
+
+    .link-menu:hover {
+        color: white;
+        border-radius: 20px;
+        background-color: var(--corhover);
+    }
+}
+
+@media (min-width: 1025px) {
+    .link-menu {
+        padding: 5px 20px;
+        width: auto;
+        color: white;
+    }
+
+    .link-menu:hover {
+        color: white;
+        border-radius: 20px;
+        background-color: var(--corhover);
+    }
+}

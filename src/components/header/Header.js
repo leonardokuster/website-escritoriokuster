@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
 import MenuIcon from '@mui/icons-material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
@@ -36,24 +37,27 @@ export default function Header() {
                             < Image src="/images/Logo.webp" alt="Logo do escritório" width={136} height={50} priority/>
                         </Link>
                     </Typography>
-                    <IconButton
-                        size="large"
-                        edge="end"
-                        color="inherit"
-                        aria-label="menu"
-                        aria-controls="menu"
-                        aria-haspopup="true"
-                        aria-expanded={menuOpen ? 'true' : 'false'}
-                        onClick={handleClick}
-                        sx={{ display: { xs: 'block', md: 'none' }, mr: 0 }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
+                    <Tooltip title="Menu">
+                        <IconButton
+                            size="large"
+                            edge="end"
+                            color="inherit"
+                            aria-label="menu"
+                            aria-controls="menu"
+                            aria-haspopup="true"
+                            aria-expanded={menuOpen ? 'true' : 'false'}
+                            onClick={handleClick}
+                            sx={{ display: { xs: 'block', md: 'none' }, mr: 0 }}
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                    </Tooltip>
                     <Menu
                         id="menu"
                         anchorEl={anchorEl}
                         open={menuOpen}
                         onClose={handleClose}
+                        onClick={handleClose}
                         anchorOrigin={{
                             vertical: 'bottom',
                             horizontal: 'left',

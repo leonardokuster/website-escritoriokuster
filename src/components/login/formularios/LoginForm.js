@@ -39,22 +39,8 @@ export default function LoginForm() {
                 localStorage.setItem('nome', response.data.usuario.nome);
                 localStorage.setItem('tipo', response.data.usuario.tipo);
                 resetForm();
-                                
-                const userType = response.data.usuario.tipo;
-                switch (userType) {
-                    case 'admin':
-                        router.push('/private/admin');
-                        break;
-                    case 'collaborator':
-                        router.push('/private/collaborator');
-                        break;
-                    case 'user':
-                        router.push('/private/user');
-                        break;
-                    default:
-                        console.error('Tipo de usuário desconhecido:', userType);
-                        break;
-                }                         
+                
+                router.push('/dashboard');              
             } catch (err) {
                 console.log('Erro:', err);
                 if (err.response) {
@@ -99,14 +85,15 @@ export default function LoginForm() {
                     <TextField
                         id="senha"
                         name="senha"
-                        label= "Senha"
+                        label="Senha"
                         variant="standard"
                         autoComplete="password"
-                        value= {formik.values.senha}
-                        onChange= {formik.handleChange}
-                        onBlur= {formik.handleBlur}
-                        error= {formik.touched.senha && Boolean(formik.errors.senha)}
-                        helperText= {formik.touched.senha && formik.errors.senha}
+                        type="password"
+                        value={formik.values.senha}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.senha && Boolean(formik.errors.senha)}
+                        helperText={formik.touched.senha && formik.errors.senha}
                     />
                     {renderErrorMessage()}
                     <h3 style={{textAlign: 'end', textDecoration: 'none', fontSize: '0.8em'}}><Link href="/forgot"><strong>Esqueceu a senha?</strong></Link></h3>

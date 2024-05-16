@@ -1,15 +1,21 @@
 .formulario {
     display: flex;
     flex-direction: column;
+    margin-top: 15px;
+    gap: 10px;
 }
 
-.botao {
-    color: white;
-    background-color: #070E26;
-    border-radius: 30px;
-    height: 50px;
-    margin-top: 20px;
-    width: 100%;
+.endereco {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.botoes {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-bottom: 10px;
 }
 
 .signupform {
