@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import ServiceSwiper from '../components/swiper/Swiper';
 import Link from 'next/link';
 import Button from '../components/button/Button';
-import Form from '../components/form/Form';
+import Form from '../components/form/ContatoForm';
 import styles from '../styles/screens/home.module.css';
 import Skeleton from '@mui/material/Skeleton';
 import Image from 'next/image';

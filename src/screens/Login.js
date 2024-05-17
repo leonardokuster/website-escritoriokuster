@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styles from '../styles/screens/login.module.css';
 import Image from 'next/image';
-import LoginForm from '../components/login/formularios/LoginForm';
-import SignupForm from '../components/login/formularios/SignupForm';
+import LoginForm from '../components/form/LoginForm';
+import SignupForm from '../components/form/SignupForm';
 import Link from 'next/link';
 
 

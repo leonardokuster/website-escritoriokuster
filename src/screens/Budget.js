@@ -6,7 +6,7 @@ import Button from '../components/button/Button';
 import styles from '../styles/screens/budget.module.css';
 import Skeleton from '@mui/material/Skeleton';
 import Image from 'next/image';
-import Form from '../components/form/Form';
+import Form from '../components/form/ContatoForm';
 
 export default function Budget() {
 
