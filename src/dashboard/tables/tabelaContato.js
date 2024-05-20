@@ -16,17 +16,25 @@ export default function ContatosTable() {
 
     useEffect(() => {
         async function fetchContatos() {
-            const response = await axios.get('https://api-formulario.vercel.app/contato/verificarContatos');
-            setContatos(response.data);
+            try {
+                const response = await axios.get('https://api-formulario.vercel.app/contato/verificarContatos');
+                setContatos(response.data);
+            } catch (error) {
+                console.error("Erro ao buscar contatos:", error);
+            }
         }
         fetchContatos();
     }, []);
 
     const handleStatusChange = async (id, status) => {
-        await axios.patch(`https://api-formulario.vercel.app/contato/atualizarStatus/${id}/status`, { status });
-        setContatos(contatos.map(contato => 
-            contato.id === id ? { ...contato, status } : contato
-        ));
+        try {
+            await axios.patch(`https://api-formulario.vercel.app/contato/atualizarStatus/${id}/status`, { status });
+            setContatos(contatos.map(contato => 
+                contato.id === id ? { ...contato, status } : contato
+            ));
+        } catch (error) {
+            console.error("Erro ao atualizar status:", error);
+        }
     };
 
     return (
@@ -58,8 +66,8 @@ export default function ContatosTable() {
                                     onChange={(e) => handleStatusChange(contato.id, e.target.value)}
                                     className={styles.select}
                                 >
-                                    <MenuItem value="pendente">Pendente</MenuItem>
-                                    <MenuItem value="respondido">Respondido</MenuItem>
+                                    <MenuItem value="pendente" style={{ fontSize: 'small' }}>Pendente</MenuItem>
+                                    <MenuItem value="respondido" style={{ fontSize: 'small' }}>Respondido</MenuItem>
                                 </Select>
                             </TableCell>
                         </TableRow>

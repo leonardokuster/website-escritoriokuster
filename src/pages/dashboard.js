@@ -1,5 +1,4 @@
 import React from 'react';
-import { useState, useEffect } from 'react';
 import Head from "next/head";
 import DashboardPage from '../dashboard/pages/DashboardPage';
 

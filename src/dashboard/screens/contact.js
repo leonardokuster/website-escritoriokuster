@@ -1,10 +1,13 @@
 import React from 'react';
+import ContatosTable from '../tables/tabelaContato';
+import styles from '../styles/contact.module.css';
 
 export default function Contact() {
 
     return (
-        <div>
-            <h1>Contato!</h1>
+        <div className={styles['contact']}>
+            <h1>Solicitações de contato</h1>
+            <ContatosTable />
         </div>
     );
 }
