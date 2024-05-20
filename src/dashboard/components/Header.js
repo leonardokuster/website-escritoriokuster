@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import Button from '@mui/material/Button';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import MessageIcon from '@mui/icons-material/Message';
@@ -22,9 +21,10 @@ import styles from '../styles/header.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export default function Header() {
+export default function Header({ onPageChange }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [currentPage, setCurrentPage] = useState('home');
   const [userType, setUserType] = useState('');
   const [userName, setUserName] = useState('');
   const router = useRouter();
@@ -60,24 +60,34 @@ export default function Header() {
 
   const primeiraLetra = userName ? userName.charAt(0).toUpperCase() : '';
 
+  const handleSettings = () => {
+    onPageChange('settings');
+    handleClose();
+  };
+
   const userTypeRoutes = {
     admin: [
-      { href: '/', text: 'Home', icon: <HomeIcon /> },
-      { href: '/clients', text: 'Clientes', icon: <PersonSearchIcon /> },
-      { href: '/services', text: 'Serviços', icon: <HomeRepairServiceIcon /> },
-      { href: '/contact', text: 'Contato', icon: <MessageIcon /> },
+      { route: '/home', text: 'Home', icon: <HomeIcon /> },
+      { route: '/clients', text: 'Clientes', icon: <PersonSearchIcon /> },
+      { route: '/services', text: 'Serviços', icon: <HomeRepairServiceIcon /> },
+      { route: '/contact', text: 'Contato', icon: <MessageIcon /> },
     ],
     collaborator: [
-      { href: '/', text: 'Home', icon: <HomeIcon /> },
-      { href: '/clients', text: 'Clientes', icon: <PersonSearchIcon /> },
-      { href: '/services', text: 'Serviços', icon: <HomeRepairServiceIcon /> },
-      { href: '/contact', text: 'Contato', icon: <MessageIcon /> },
+      { route: '/home', text: 'Home', icon: <HomeIcon /> },
+      { route: '/clients', text: 'Clientes', icon: <PersonSearchIcon /> },
+      { route: '/services', text: 'Serviços', icon: <HomeRepairServiceIcon /> },
+      { route: '/contact', text: 'Contato', icon: <MessageIcon /> },
     ],
     user: [
-      { href: '/', text: 'Home', icon: <HomeIcon /> },
-      { href: '/services', text: 'Serviços', icon: <HomeRepairServiceIcon /> },
-      { href: '/contact', text: 'Contato', icon: <MessageIcon /> },
+      { route: '/home', text: 'Home', icon: <HomeIcon /> },
+      { route: '/services', text: 'Serviços', icon: <HomeRepairServiceIcon /> },
+      { route: '/contact', text: 'Contato', icon: <MessageIcon /> },
     ],
+  };
+
+  const handleMenuItemClick = (route) => {
+    onPageChange(route); 
+    handleClose();
   };
 
   return (
@@ -140,23 +150,19 @@ export default function Header() {
             },
           }}            
         >
-          {userType && userTypeRoutes[userType].map(({ href, text, icon }) => (
-            <Link key={href} href={href} className={styles['botao']}>
-              <MenuItem onClick={handleClose}>
-                <ListItemIcon>{icon}</ListItemIcon>
-                {text}
-              </MenuItem>
-            </Link>
+          {userType && userTypeRoutes[userType].map(({ route, text, icon }) => (
+            <MenuItem key={route} onClick={() => handleMenuItemClick(route)}>
+              <ListItemIcon>{icon}</ListItemIcon>
+              {text}
+            </MenuItem>
           ))}
           <Divider />
-          <Link href="/" className={styles['botao']}>
-            <MenuItem onClick={handleClose}>
-              <ListItemIcon>
-                <Settings fontSize="small" />
-              </ListItemIcon>
-              Configurações
-            </MenuItem>
-          </Link>
+          <MenuItem onClick={handleSettings}>
+            <ListItemIcon>
+              <Settings fontSize="small" />
+            </ListItemIcon>
+            Configurações
+          </MenuItem>
           <Link href="/" className={styles['botao']}>
             <MenuItem onClick={handleLogout}>
               <ListItemIcon>
@@ -174,16 +180,17 @@ export default function Header() {
           />
         )}
         <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-          {userType && userTypeRoutes[userType].map(({ href, text }) => (
-            <Link key={href} href={href} className={styles['botao']}>
-              <Button color="inherit">{text}</Button>
-            </Link>
-          ))}
-          <Link href="/" className={styles['botao']}>
-            <MenuItem onClick={handleClose}>
-              Configurações
+          {userType && userTypeRoutes[userType].map(({ route, text }) => (
+            <MenuItem key={route} onClick={() => handleMenuItemClick(route)}>
+              {text}
             </MenuItem>
-          </Link>
+          ))}
+          <MenuItem onClick={handleSettings}>
+            <ListItemIcon>
+              <Settings fontSize="small" />
+            </ListItemIcon>
+            Configurações
+          </MenuItem>
           <Link href="/" className={styles['botao']}>
             <MenuItem onClick={handleLogout}>
               Sair

@@ -28,7 +28,6 @@ export default function Dashboard() {
 
     return (
         <div>
-            <Header />
             {userType === 'admin' && (
                 <Admin />
             )}

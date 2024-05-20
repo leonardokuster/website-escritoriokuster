@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 
-const CollaboratorDashboard = () => {
+export default function Collaborator() {
     const [fullName, setFullName] = useState('');
 
     useEffect(() => {
@@ -20,6 +20,4 @@ const CollaboratorDashboard = () => {
             <p>Você é um colaborador!</p>
         </div>
     );
-};
-
-export default CollaboratorDashboard;
+}

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Container, Typography, Button, Grid, Paper } from '@mui/material';
 import styles from '../styles/home.module.css';
 
-const Home = () => {
+export default function Home() {
     const [fullName, setFullName] = useState('');
 
     useEffect(() => {
@@ -27,6 +27,4 @@ const Home = () => {
             </Paper>
         </Container>
     );
-};
-
-export default Home;
+}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import styles from '../styles/user.module.css';
 
-export default function UserDashboard() {
+export default function User() {
     const [fullName, setFullName] = useState('');
 
     useEffect(() => {
