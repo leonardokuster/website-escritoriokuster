@@ -1,6 +1,7 @@
 import React from 'react';
-import styles from '../styles/home.module.css';
+import styles from '../styles/notFound.module.css';
 import { Container, Typography, Button, Grid, Paper } from '@mui/material';
+import Image from 'next/image';
 
 export default function NotFound() {
     return (
@@ -9,6 +10,8 @@ export default function NotFound() {
                 <Typography variant="h4" gutterBottom>
                     Página não encontrada
                 </Typography>
+                <Image src="/images/notfound.webp" alt="Mulher atentendo telefone" className={styles.desktopImage} width={400} height={300} fetchpriority="high"/>
+                <Image src="/images/notfound.webp" alt="Telefone recebendo mensagem" className={styles.mobileImage} width={200} height={150} fetchpriority="high"/>
             </Paper>
         </Container>
     );

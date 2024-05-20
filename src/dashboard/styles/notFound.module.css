@@ -9,4 +9,26 @@
 .paper {
     padding: 50px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.desktopImage {
+    display: none;
+}
+
+.mobileImage {
+    display: block;
+}
+
+@media (min-width: 768px){ 
+    .desktopImage {
+        display: block;
+    }
+
+    .mobileImage {
+        display: none;
+    }
 }
