@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from '../styles/home.module.css';
+import { Container, Typography, Button, Grid, Paper } from '@mui/material';
 
 export default function NotFound() {
     return (

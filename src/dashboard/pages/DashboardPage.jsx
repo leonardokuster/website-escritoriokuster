@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Header from '../components/Header'; 
-import Home from '../screens/home';
-import Clients from '../screens/clients';
-import Contact from '../screens/contact';
-import Services from '../screens/services';
-import Settings from '../screens/settings';
+import Header from '../components/Header';
+import Main from '../components/Main';
+import Footer from '../components/Footer';
 
-export default function Admin() {
+export default function DashboardPage() {
   const router = useRouter();
   const [userType, setUserType] = useState('');
   const [currentPage, setCurrentPage] = useState('home');
@@ -32,13 +29,10 @@ export default function Admin() {
   };
 
   return (
-    <div>
+    <>
       <Header onPageChange={onPageChange} />
-      {currentPage === 'home' && <Home />}
-      {currentPage === 'clients' && <Clients />}
-      {currentPage === 'contact' && <Contact />}
-      {currentPage === 'services' && <Services />}
-      {currentPage === 'settings' && <Settings />}
-    </div>
+      <Main currentPage={currentPage} />
+      <Footer />
+    </>
   );
 }

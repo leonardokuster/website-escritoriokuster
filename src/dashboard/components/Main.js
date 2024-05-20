@@ -1,38 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Home from '../screens/home';
 import Clients from '../screens/clients';
 import Contact from '../screens/contact';
 import Services from '../screens/services';
 import Settings from '../screens/settings';
 import NotFound from '../screens/notFound';
-import Header from './Header';
 
-export default function Main() {
-  const [currentPage, setCurrentPage] = useState('/');
-
-  const renderComponent = () => {
-    switch (currentPage) {
-      case '/homeDashboard':
-        return <Home />;
-      case '/clientsDashboard':
-        return <Clients />;
-      case '/contactDashboard':
-        return <Contact />;
-      case '/servicesDashboard':
-        return <Services />;
-      case '/settings':
-        return <Settings />;
-      default:
-        return <NotFound />;
-    }
-  };
-
+export default function Main({ currentPage }) {
   return (
-    <div>
-      <Header onPageChange={setCurrentPage} />
-      <main>
-        {renderComponent()}
-      </main>
-    </div>
+    <main>
+        {currentPage === 'home' && <Home />}
+        {currentPage === 'clients' && <Clients />}
+        {currentPage === 'contact' && <Contact />}
+        {currentPage === 'services' && <Services />}
+        {currentPage === 'settings' && <Settings />}
+        {!['home', 'clients', 'contact', 'services', 'settings'].includes(currentPage) && <NotFound />}
+    </main>
   );
 }

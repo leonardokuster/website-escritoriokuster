@@ -24,7 +24,6 @@ import Link from 'next/link';
 export default function Header({ onPageChange }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [currentPage, setCurrentPage] = useState('home');
   const [userType, setUserType] = useState('');
   const [userName, setUserName] = useState('');
   const router = useRouter();
@@ -67,21 +66,21 @@ export default function Header({ onPageChange }) {
 
   const userTypeRoutes = {
     admin: [
-      { route: '/home', text: 'Home', icon: <HomeIcon /> },
-      { route: '/clients', text: 'Clientes', icon: <PersonSearchIcon /> },
-      { route: '/services', text: 'Serviços', icon: <HomeRepairServiceIcon /> },
-      { route: '/contact', text: 'Contato', icon: <MessageIcon /> },
+      { route: 'home', text: 'Home', icon: <HomeIcon /> },
+      { route: 'clients', text: 'Clientes', icon: <PersonSearchIcon /> },
+      { route: 'services', text: 'Serviços', icon: <HomeRepairServiceIcon /> },
+      { route: 'contact', text: 'Contato', icon: <MessageIcon /> },
     ],
     collaborator: [
-      { route: '/home', text: 'Home', icon: <HomeIcon /> },
-      { route: '/clients', text: 'Clientes', icon: <PersonSearchIcon /> },
-      { route: '/services', text: 'Serviços', icon: <HomeRepairServiceIcon /> },
-      { route: '/contact', text: 'Contato', icon: <MessageIcon /> },
+      { route: 'home', text: 'Home', icon: <HomeIcon /> },
+      { route: 'clients', text: 'Clientes', icon: <PersonSearchIcon /> },
+      { route: 'services', text: 'Serviços', icon: <HomeRepairServiceIcon /> },
+      { route: 'contact', text: 'Contato', icon: <MessageIcon /> },
     ],
     user: [
-      { route: '/home', text: 'Home', icon: <HomeIcon /> },
-      { route: '/services', text: 'Serviços', icon: <HomeRepairServiceIcon /> },
-      { route: '/contact', text: 'Contato', icon: <MessageIcon /> },
+      { route: 'home', text: 'Home', icon: <HomeIcon /> },
+      { route: 'services', text: 'Serviços', icon: <HomeRepairServiceIcon /> },
+      { route: 'contact', text: 'Contato', icon: <MessageIcon /> },
     ],
   };
 
@@ -181,14 +180,11 @@ export default function Header({ onPageChange }) {
         )}
         <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
           {userType && userTypeRoutes[userType].map(({ route, text }) => (
-            <MenuItem key={route} onClick={() => handleMenuItemClick(route)}>
+            <MenuItem key={route} onClick={() => handleMenuItemClick(route)} className={styles['botao']}>
               {text}
             </MenuItem>
           ))}
-          <MenuItem onClick={handleSettings}>
-            <ListItemIcon>
-              <Settings fontSize="small" />
-            </ListItemIcon>
+          <MenuItem onClick={handleSettings} className={styles['botao']}>
             Configurações
           </MenuItem>
           <Link href="/" className={styles['botao']}>

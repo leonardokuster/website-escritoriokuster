@@ -1,9 +1,9 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import Head from "next/head";
-import Dashboard from '../dashboard/pages/Dashboard';
+import DashboardPage from '../dashboard/pages/DashboardPage';
 
-export default function DashboardPage() {
+export default function Dashboard() {
   
   return (
     <>
@@ -13,10 +13,7 @@ export default function DashboardPage() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Dashboard />
+      <DashboardPage />
     </>
   );
 }
-
-
-
