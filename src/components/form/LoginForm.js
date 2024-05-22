@@ -96,7 +96,7 @@ export default function LoginForm() {
                         helperText={formik.touched.senha && formik.errors.senha}
                     />
                     {renderErrorMessage()}
-                    <h3 style={{textAlign: 'end', textDecoration: 'none', fontSize: '0.8em'}}><Link href="/forgot"><strong>Esqueceu a senha?</strong></Link></h3>
+                    {/*<h3 style={{textAlign: 'end', textDecoration: 'none', fontSize: '0.8em'}}><Link href="/forgot"><strong>Esqueceu a senha?</strong></Link></h3>*/}
                     <div>
                         <Button className={styles['botao']} type= "submit" variant= "contained">
                             Entrar
