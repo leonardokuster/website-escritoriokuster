@@ -2,11 +2,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-height: 100vh;
 }
 
 .container {
     margin: 20px auto;
-    max-width: 100%;
+    max-width: 90vw;
 }
 
 .respondido {
@@ -37,4 +38,11 @@
 .select {
     width: 100%;
     font-size: 0.95em;
+}
+
+@media (min-width: 768px){ 
+    .container {
+        margin: 20px auto;
+        max-width: 100%;
+    }
 }
