@@ -1,13 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import InProgress from './inProgress';
 import ContatosTable from '../tables/tabelaContato';
-import styles from '../styles/contact.module.css';
 
-export default function Contact() {
+export default function Services() {
+    const [userType, setUserType] = useState('');
+
+    useEffect(() => {
+        const storedUserType = localStorage.getItem('tipo');
+        if (storedUserType) {
+          setUserType(storedUserType);
+        }
+      }, []);
 
     return (
-        <div className={styles['contact']}>
-            <h1>Solicitações de contato</h1>
-            <ContatosTable />
+        <div>
+            {userType === 'admin' && <ContatosTable />}
+            {userType === 'collaborator' && <ContatosTable />}
+            {userType === 'user' && <InProgress />}
         </div>
     );
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Container, Typography, Button, Grid, Paper } from '@mui/material';
+import { Container, Typography, Paper } from '@mui/material';
 import styles from '../styles/home.module.css';
 
 export default function Home() {
@@ -16,8 +16,8 @@ export default function Home() {
     const firstName = fullName.split(' ')[0];
 
     return (
-        <Container className={styles.dashboard}>
-            <Paper elevation={3} className={styles.paper}>
+        <Container className={styles['dashboard']}>
+            <Paper elevation={3} className={styles['paper']}>
                 <Typography variant="h4" gutterBottom>
                     Bem-vindo, {firstName}!
                 </Typography>

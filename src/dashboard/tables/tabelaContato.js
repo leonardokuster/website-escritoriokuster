@@ -38,42 +38,45 @@ export default function ContatosTable() {
     };
 
     return (
-        <TableContainer component={Paper} className={styles.container}>
-            <Table className={styles.tabela}>
-                <TableHead>
-                    <TableRow>
-                        <TableCell className={styles.th}>ID</TableCell>
-                        <TableCell className={styles.th}>Assunto</TableCell>
-                        <TableCell className={styles.th}>Nome</TableCell>
-                        <TableCell className={styles.th}>Email</TableCell>
-                        <TableCell className={styles.th}>Telefone</TableCell>
-                        <TableCell className={styles.th}>Mensagem</TableCell>
-                        <TableCell className={styles.th}>Status</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {contatos.map((contato) => (
-                        <TableRow key={contato.id} className={contato.status === 'respondido' ? styles.respondido : ''}>
-                            <TableCell className={styles.td}>{contato.id}</TableCell>
-                            <TableCell className={styles.td}>{contato.subject}</TableCell>
-                            <TableCell className={styles.td}>{contato.fullname}</TableCell>
-                            <TableCell className={styles.td}>{contato.email}</TableCell>
-                            <TableCell className={styles.td}>{contato.phone}</TableCell>
-                            <TableCell className={styles.td}>{contato.content}</TableCell>
-                            <TableCell className={styles.td}>
-                                <Select
-                                    value={contato.status || 'pendente'}
-                                    onChange={(e) => handleStatusChange(contato.id, e.target.value)}
-                                    className={styles.select}
-                                >
-                                    <MenuItem value="pendente" style={{ fontSize: 'small' }}>Pendente</MenuItem>
-                                    <MenuItem value="respondido" style={{ fontSize: 'small' }}>Respondido</MenuItem>
-                                </Select>
-                            </TableCell>
+        <div className={styles['contato']}>
+            <h1>Solicitações de contato</h1>
+            <TableContainer component={Paper} className={styles['container']}>
+                <Table className={styles['tabela']}>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell className={styles['th']}>ID</TableCell>
+                            <TableCell className={styles['th']}>Assunto</TableCell>
+                            <TableCell className={styles['th']}>Nome</TableCell>
+                            <TableCell className={styles['th']}>E-mail</TableCell>
+                            <TableCell className={styles['th']}>Telefone</TableCell>
+                            <TableCell className={styles['th']}>Mensagem</TableCell>
+                            <TableCell className={styles['th']}>Status</TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                    </TableHead>
+                    <TableBody>
+                        {contatos.map((contato) => (
+                            <TableRow key={contato.id} className={contato.status === 'respondido' ? styles.respondido : ''}>
+                                <TableCell className={styles['td']}>{contato.id}</TableCell>
+                                <TableCell className={styles['td']}>{contato.subject}</TableCell>
+                                <TableCell className={styles['td']}>{contato.fullname}</TableCell>
+                                <TableCell className={styles['td']}>{contato.email}</TableCell>
+                                <TableCell className={styles['td']}>{contato.phone}</TableCell>
+                                <TableCell className={styles['td']}>{contato.content}</TableCell>
+                                <TableCell className={styles['td']}>
+                                    <Select
+                                        value={contato.status || 'pendente'}
+                                        onChange={(e) => handleStatusChange(contato.id, e.target.value)}
+                                        className={styles['select']}
+                                    >
+                                        <MenuItem value="pendente" style={{ fontSize: 'small' }}>Pendente</MenuItem>
+                                        <MenuItem value="respondido" style={{ fontSize: 'small' }}>Respondido</MenuItem>
+                                    </Select>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </div>
     );
 }
