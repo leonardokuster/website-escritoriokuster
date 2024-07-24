@@ -1,0 +1,18 @@
+.formulario {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    width: 100%;
+}
+
+.elementos {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.botao:hover, .segundobotao:hover {
+    cursor: pointer;
+    background-color: #070e26ea;
+}

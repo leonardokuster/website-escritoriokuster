@@ -32,7 +32,7 @@ export default function LoginForm() {
         validationSchema: validationSchema,
         onSubmit: async (values, { resetForm }) => {
             try {
-                const response = await axios.post('https://api-login-self.vercel.app/login', values, {
+                const response = await axios.post('http://localhost:3001/login', values, {
                     headers: { 'Content-Type': 'application/json' },
                 });
                 localStorage.setItem('token', response.data.token);

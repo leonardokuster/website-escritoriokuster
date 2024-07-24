@@ -7,6 +7,7 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import MessageIcon from '@mui/icons-material/Message';
+import ArticleIcon from '@mui/icons-material/Article';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
@@ -59,11 +60,6 @@ export default function Header({ onPageChange }) {
 
   const primeiraLetra = userName ? userName.charAt(0).toUpperCase() : '';
 
-  const handleSettings = () => {
-    onPageChange('settings');
-    handleClose();
-  };
-
   const userTypeRoutes = {
     admin: [
       { route: 'home', text: 'Home', icon: <HomeIcon /> },
@@ -80,7 +76,7 @@ export default function Header({ onPageChange }) {
     user: [
       { route: 'home', text: 'Home', icon: <HomeIcon /> },
       { route: 'services', text: 'Serviços', icon: <HomeRepairServiceIcon /> },
-      { route: 'contact', text: 'Contato', icon: <MessageIcon /> },
+      { route: 'contact', text: 'Gerenciamento', icon: <ArticleIcon /> },
     ],
   };
 
@@ -156,12 +152,6 @@ export default function Header({ onPageChange }) {
             </MenuItem>
           ))}
           <Divider />
-          <MenuItem onClick={handleSettings}>
-            <ListItemIcon>
-              <Settings fontSize="small" />
-            </ListItemIcon>
-            Configurações
-          </MenuItem>
           <Link href="/" className={styles['botao']}>
             <MenuItem onClick={handleLogout}>
               <ListItemIcon>
@@ -184,9 +174,6 @@ export default function Header({ onPageChange }) {
               {text}
             </MenuItem>
           ))}
-          <MenuItem onClick={handleSettings} className={styles['botao']}>
-            Configurações
-          </MenuItem>
           <Link href="/" className={styles['botao']}>
             <MenuItem onClick={handleLogout}>
               Sair

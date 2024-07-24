@@ -1,0 +1,23 @@
+.formulario {
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+    gap: 10px;
+}
+
+.endereco {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.botoes {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-bottom: 10px;
+}
+
+.cadastroform {
+    width: 80vw;
+}
