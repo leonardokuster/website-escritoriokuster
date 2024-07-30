@@ -19,18 +19,9 @@
 }
 
 .signupform {
-    width: 80vw;
+    width: min-content;
 }
 
-
-@media (min-width: 768px) and (max-width: 1024px) {
-    .signupform {
-        width: 25vw;
-    }
-}
-
-@media (min-width: 1025px) {
-    .signupform {
-        width: 25vw;
-    }
+.steps {
+    width: fit-content;
 }

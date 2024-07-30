@@ -141,7 +141,7 @@ export default function SignupForm() {
             transition={{ duration: 0.5 }}
         >
             <h2 style={{ marginBottom: '20px' }}>Preencha os dados abaixo e cadastre-se agora mesmo!</h2>
-            <Stepper activeStep={step}>
+            <Stepper activeStep={step} className={styles['steps']}>
                 {steps.map((label) => (
                     <Step key={label}>
                         <StepLabel>{label}</StepLabel>

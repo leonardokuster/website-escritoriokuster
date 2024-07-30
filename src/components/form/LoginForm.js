@@ -11,14 +11,14 @@ import { motion } from "framer-motion";
 
 const validationSchema = yup.object({
     email: yup
-    .string('E-mail')
-    .email('Insira um e-mail válido')
-    .matches(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, 'Insira um e-mail válido')
-    .required('Campo obrigatório'),
+        .string('E-mail')
+        .email('Insira um e-mail válido')
+        .matches(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, 'Insira um e-mail válido')
+        .required('Campo obrigatório'),
     senha: yup
-    .string('Senha')
-    .required('Campo obrigatório'),
-})
+        .string('Senha')
+        .required('Campo obrigatório'),
+});
 
 export default function LoginForm() {
     const [message, setMessage] = useState('');
@@ -53,14 +53,14 @@ export default function LoginForm() {
                     setMessage('Erro ao tentar fazer login');
                 }
             }
-        },        
+        },   
     });
 
     const renderErrorMessage = () => {
         return <h3 style={{ fontSize: '0.84em', color: '#202949', textAlign: 'left' }}>{message}</h3>;
     };
-    
-    return(
+
+    return (
         <>
             <motion.div
                 className={styles['loginform']}
@@ -73,14 +73,14 @@ export default function LoginForm() {
                     <TextField
                         id="email"
                         name="email"
-                        label= "E-mail"
+                        label="E-mail"
                         autoComplete="email"
                         variant="standard"
-                        value= {formik.values.email}
-                        onChange= {formik.handleChange}
-                        onBlur= {formik.handleBlur}
-                        error= {formik.touched.email && Boolean(formik.errors.email)}
-                        helperText= {formik.touched.email && formik.errors.email}
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.email && Boolean(formik.errors.email)}
+                        helperText={formik.touched.email && formik.errors.email}
                     />
                     <TextField
                         id="senha"
@@ -96,15 +96,14 @@ export default function LoginForm() {
                         helperText={formik.touched.senha && formik.errors.senha}
                     />
                     {renderErrorMessage()}
-                    {/*<h3 style={{textAlign: 'end', textDecoration: 'none', fontSize: '0.8em'}}><Link href="/forgot"><strong>Esqueceu a senha?</strong></Link></h3>*/}
                     <div>
-                        <Button className={styles['botao']} type= "submit" variant= "contained">
+                        <Button className={styles['botao']} type="submit" variant="contained">
                             Entrar
                         </Button>
                     </div>
-                    <br></br>
+                    <br />
                 </form>
             </motion.div>
         </>
     );
-};
+}

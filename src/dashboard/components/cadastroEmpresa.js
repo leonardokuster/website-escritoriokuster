@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import * as yup from 'yup';
 import axios from 'axios';
 import { TextField, Button, Box } from '@mui/material';
-import styles from '../styles/cadastroFormulario.module.css';
+import styles from '../styles/cadastroEmpresa.module.css';
 import { motion } from "framer-motion";
 
 const validationSchema = yup.object({
@@ -49,10 +49,11 @@ const validationSchema = yup.object({
 
 export default function CadastroEmpresa() {
     const [message, setMessage] = useState('');
+
     const formik = useFormik({
         initialValues: {
             cnpj: '',
-            nome: '',
+            nome_fantasia: '',
             razao_social: '',
             atividades_exercidas: '',
             capital_social: '',
@@ -66,13 +67,24 @@ export default function CadastroEmpresa() {
         validateOnChange: false,
         validateOnBlur: false,
         onSubmit: async (values, { resetForm }) => {
+            const token = localStorage.getItem('token');
+            const usuario_id = localStorage.getItem('usuario_id');
+        
             try {
-                const response = await axios.post('http://localhost:3001/companies', values, {
-                    headers: { 'Content-Type': 'application/json' },
+                const payload = {
+                    ...values,
+                    capital_social: parseFloat(values.capital_social.replace('R$', '').replace('.', '').replace(',', '.')),
+                    usuario_id
+                };
+        
+                const response = await axios.post(`http://localhost:3001/companies/${usuario_id}`, payload, {
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                 });
+        
                 setMessage(response.data.message);
                 resetForm();
             } catch (err) {
+                console.error('Erro ao enviar a requisição:', err.response);
                 setMessage(err.response.data.message);
             }
         },
@@ -85,7 +97,6 @@ export default function CadastroEmpresa() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
         >
-            <h2 style={{ marginBottom: '20px' }}>Informações sobre sua empresa</h2>
 
             <form onSubmit={formik.handleSubmit}>
                 <Box className={styles['formulario']}>
@@ -99,15 +110,15 @@ export default function CadastroEmpresa() {
                         helperText={formik.touched.cnpj && formik.errors.cnpj}
                     />
                     <TextField
-                        id="nome"
-                        name="nome"
+                        id="nome_fantasia"
+                        name="nome_fantasia"
                         label="Nome fantasia"
                         variant="standard"
-                        value={formik.values.nome}
+                        value={formik.values.nome_fantasia}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.nome && Boolean(formik.errors.nome)}
-                        helperText={formik.touched.nome && formik.errors.nome}
+                        error={formik.touched.nome_fantasia && Boolean(formik.errors.nome_fantasia)}
+                        helperText={formik.touched.nome_fantasia && formik.errors.nome_fantasia}
                         style={{ marginTop: '10px' }}
                     />
                     <TextField
@@ -222,4 +233,4 @@ export default function CadastroEmpresa() {
             </form>
         </motion.div>
     );
-};
+}
