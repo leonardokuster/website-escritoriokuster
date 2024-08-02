@@ -119,7 +119,7 @@ export default function CadastroEmpresa() {
             emailEmpresa: '',
             telefoneEmpresa: '',
             qntSocios: 1,
-            socios: [],
+            socios: [{ nomeSocio: '' }],
         },
         validationSchema: validationSchema,
         validateOnChange: false,
@@ -322,15 +322,15 @@ export default function CadastroEmpresa() {
                         [...Array(Number(formik.values.qntSocios)).keys()].map((index) => (
                             <Box key={index}>
                                 <TextField
-                                    id={`nome_socio${index}`}
-                                    name={`socios[${index}].nome_socio`}
+                                    id={`nomeSocio${index}`}
+                                    name={`socios[${index}].nomeSocio`}
                                     label={`Nome do ${index + 1}º sócio`}
                                     variant="standard"
-                                    value={formik.values.socios[index]?.nome_socio || ''}
+                                    value={formik.values.socios[index]?.nomeSocio || ''}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    error={formik.touched.socios && formik.touched.socios[index]?.nome_socio && Boolean(formik.errors.socios?.[index]?.nome_socio)}
-                                    helperText={formik.touched.socios && formik.touched.socios[index]?.nome_socio && formik.errors.socios?.[index]?.nome_socio}
+                                    error={formik.touched.socios && formik.touched.socios[index]?.nomeSocio && Boolean(formik.errors.socios?.[index]?.nomeSocio)}
+                                    helperText={formik.touched.socios && formik.touched.socios[index]?.nomeSocio && formik.errors.socios?.[index]?.nomeSocio}
                                     style={{ marginTop: '10px' }}
                                 />
                             </Box>

@@ -168,8 +168,6 @@ export default function SignupForm() {
                 const response = await axios.post('http://localhost:3001/signup', values, {
                     headers: { 'Content-Type': 'application/json' },
                 });
-                console.log('Response from server', response);
-                console.log('Valores para cadastro', values);
                 setMessage(response.data.message);
                 resetForm();
             } catch (err) {
@@ -205,9 +203,6 @@ export default function SignupForm() {
             console.error('Erro ao buscar endereço:', error);
         }
     };
-
-    console.log(formik.values.possuiEmpresa);
-
 
     return (
         <motion.div

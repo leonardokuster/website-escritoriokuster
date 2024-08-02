@@ -1,1 +1,1 @@
-self.__REACT_LOADABLE_MANIFEST="{\"screens\\\\Home.js -> next/image\":{\"id\":\"screens\\\\Home.js -> next/image\",\"files\":[]}}"
+self.__REACT_LOADABLE_MANIFEST="{}"

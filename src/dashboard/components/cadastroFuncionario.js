@@ -15,7 +15,7 @@ const formatDate = (date) => {
     return `${year}-${month}-${day}`;
 };
 
-const validationSchemas  = [
+const validationSchemas = [
     yup.object({
         nome: yup
             .string('Nome completo')
@@ -32,14 +32,14 @@ const validationSchemas  = [
         sexo: yup
             .string('Sexo')
             .required('Campo obrigatório'),
-        cor_etnia: yup
+        corEtnia: yup
             .string('Cor/Etnia')
             .required('Campo obrigatório'),
-        data_nascimento: yup
+        dataNascimento: yup
             .date()
             .nullable()
             .required('Campo obrigatório'),
-        local_nascimento: yup
+        localNascimento: yup
             .string('Local do nascimento')
             .required('Campo obrigatório'),
         nacionalidade: yup
@@ -51,11 +51,11 @@ const validationSchemas  = [
             .required('Campo obrigatório'),
         rg: yup
             .string('RG')
-            .notRequired(),   
-        orgao_expedidor: yup
+            .notRequired(),
+        orgaoExpedidor: yup
             .string('Órgão expedidor')
             .notRequired(),
-        data_rg: yup
+        dataRg: yup
             .date()
             .nullable()
             .notRequired(),
@@ -67,10 +67,10 @@ const validationSchemas  = [
         endereco: yup
             .string('Endereço')
             .required('Campo obrigatório'),
-        numero_casa: yup
+        numeroCasa: yup
             .string('Número')
             .required('Campo obrigatório'),
-        complemento_casa: yup
+        complementoCasa: yup
             .string('Complemento')
             .notRequired(),
         bairro: yup
@@ -84,19 +84,19 @@ const validationSchemas  = [
             .required('Campo obrigatório'),
     }),
     yup.object({
-        nome_mae: yup
+        nomeMae: yup
             .string('Nome da mãe')
             .required('Campo obrigatório'),
-        nome_pai: yup
+        nomePai: yup
             .string('Nome do pai')
             .notRequired(),
-        estado_civil: yup
+        estadoCivil: yup
             .string('Estado civil')
             .required('Campo obrigatório'),
-        nome_conjuge: yup
+        nomeConjuge: yup
             .string('Nome cônjuge')
             .notRequired(),
-        qnt_dependente: yup
+        qntDependente: yup
             .number()
             .min(0, 'Quantidade de dependentes deve ser maior ou igual a 0')
             .required('Quantidade de dependentes é obrigatória'),
@@ -125,26 +125,26 @@ const validationSchemas  = [
         pis: yup
             .string('Número do PIS')
             .required('Campo obrigatório'),
-        numero_ct: yup
+        numeroCt: yup
             .string('Número da carteira de trabalho')
             .required('Campo obrigatório'),
         serie: yup
             .string('Série')
             .required('Campo obrigatório'),
-        data_ct: yup
+        dataCt: yup
             .date()
             .nullable()
             .required('Campo obrigatório'),
-        carteira_digital: yup
+        carteiraDigital: yup
             .string('Carteira digital')
             .notRequired(),
-        titulo_eleitoral: yup
+        tituloEleitoral: yup
             .string('Título eleitoral')
             .notRequired(),
         zona: yup
             .string('Zona')
             .notRequired(),
-        secao: yup 
+        secao: yup
             .string('Seção')
             .notRequired(),
     }),
@@ -152,14 +152,14 @@ const validationSchemas  = [
         funcao: yup
             .string('Função')
             .required('Campo obrigatório'),
-        data_admissao: yup
+        dataAdmissao: yup
             .date()
             .nullable()
             .required('Campo obrigatório'),
         salario: yup
             .string('Salário')
             .required('Campo obrigatório'),
-        contrato_experiencia: yup
+        contratoExperiencia: yup
             .string('Contrato experiência')
             .notRequired(),
         horarios: yup
@@ -171,17 +171,17 @@ const validationSchemas  = [
         periculosidade: yup
             .string('Periculosidade')
             .required('Campo obrigatório'),
-        quebra_de_caixa: yup
+        quebraDeCaixa: yup
             .string('Quebra de caixa')
             .required('Campo obrigatório'),
-        vale_transporte: yup
+        valeTransporte: yup
             .string('Vale transporte')
             .required('Campo obrigatório'),
-        quantidade_vales: yup
+        quantidadeVales: yup
             .number('Quantidade vales')
             .notRequired(),
     })
-]
+];
 
 export default function CadastroFuncionario({cnpj}) {
     const [step, setStep] = useState(0);
@@ -197,46 +197,51 @@ export default function CadastroFuncionario({cnpj}) {
             email: '',
             telefone: '',
             sexo: '',
-            cor_etnia: '',
-            data_nascimento: '',
-            local_nascimento: '',
+            corEtnia: '',
+            dataNascimento: '',
+            localNascimento: '',
             nacionalidade: 'Brasileiro(a)',
             cpf: '',
             rg: '',
-            orgao_expedidor: '',
-            data_rg: '',
+            orgaoExpedidor: '',
+            dataRg: '',
             cep: '',
             endereco: '',
-            numero_casa: '',
-            complemento_casa: '',
+            numeroCasa: '',
+            complementoCasa: '',
             bairro: '',
             cidade: '',
             estado: '',
-            nome_mae: '',
-            nome_pai: '',
+            nomeMae: '',
+            nomePai: '',
             escolaridade: '',
-            estado_civil: '',
-            nome_conjuge: '',
+            estadoCivil: '',
+            nomeConjuge: '',
             pis: '',
-            numero_ct: '',
+            numeroCt: '',
             serie: '',
-            data_ct: '',
-            carteira_digital: false,
-            titulo_eleitoral: '',
+            dataCt: '',
+            carteiraDigital: false,
+            tituloEleitoral: '',
             zona: '',
             secao: '',
-            qnt_dependente: 0,
-            dependentes: [],
+            qntDependente: 0,
+            dependentes: [{ 
+                nomeDependente: '', 
+                dataNascimentoDependente: '', 
+                cpfDependente: '', 
+                localNascimentoDependente: '' 
+            }],
             funcao: '',
-            data_admissao: '',
+            dataAdmissao: '',
             salario: '',
-            contrato_experiencia: '',
+            contratoExperiencia: '',
             horarios: '',
             insalubridade: false,
             periculosidade: false,
-            quebra_de_caixa: false,
-            vale_transporte: false,
-            quantidade_vales: '',
+            quebraDeCaixa: false,
+            valeTransporte: false,
+            quantidadeVales: '',
         },
         validationSchema: validationSchemas[step],
         validateOnChange: false,  
@@ -254,10 +259,10 @@ export default function CadastroFuncionario({cnpj}) {
 
             const formattedValues = {
                 ...values,
-                data_nascimento: formatDate(values.data_nascimento),
-                data_rg: formatDate(values.data_rg),
-                data_ct: formatDate(values.data_ct),
-                data_admissao: formatDate(values.data_admissao),
+                dataNascimento: formatDate(values.dataNascimento),
+                dataRg: formatDate(values.dataRg),
+                dataCt: formatDate(values.dataCt),
+                dataAdmissao: formatDate(values.dataAdmissao),
             };
 
             try {
@@ -393,16 +398,16 @@ export default function CadastroFuncionario({cnpj}) {
                         </FormControl>
                         <FormControl
                             variant="standard"
-                            error={formik.touched.cor_etnia && Boolean(formik.errors.cor_etnia)}
+                            error={formik.touched.corEtnia && Boolean(formik.errors.corEtnia)}
                             fullWidth
                             style={{textAlign: 'left'}}
                         >
-                            <InputLabel id="cor_etnia-label">Cor/Etnia*</InputLabel>
+                            <InputLabel id="corEtnia-label">Cor/Etnia*</InputLabel>
                             <Select
-                                labelId="cor_etnia-label"
-                                id="cor_etnia"
-                                name="cor_etnia"
-                                value={formik.values.cor_etnia}
+                                labelId="corEtnia-label"
+                                id="corEtnia"
+                                name="corEtnia"
+                                value={formik.values.corEtnia}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             >
@@ -415,32 +420,32 @@ export default function CadastroFuncionario({cnpj}) {
                                 <MenuItem value="amarelo">Amarelo</MenuItem>
                                 <MenuItem value="indigena">Indígena</MenuItem>
                             </Select>
-                            {formik.touched.cor_etnia && formik.errors.cor_etnia && (
-                                <FormHelperText>{formik.errors.cor_etnia}</FormHelperText>
+                            {formik.touched.corEtnia && formik.errors.corEtnia && (
+                                <FormHelperText>{formik.errors.corEtnia}</FormHelperText>
                             )}
                         </FormControl>
                         <TextField
-                            id="data_nascimento"
-                            name="data_nascimento"
+                            id="dataNascimento"
+                            name="dataNascimento"
                             label="Data de Nascimento*"
                             type="date"
                             InputLabelProps={{ shrink: true }}
-                            value={formik.values.data_nascimento}
+                            value={formik.values.dataNascimento}
                             onChange={formik.handleChange}
-                            error={formik.touched.data_nascimento && Boolean(formik.errors.data_nascimento)}
-                            helperText={formik.touched.data_nascimento && formik.errors.data_nascimento}
+                            error={formik.touched.dataNascimento && Boolean(formik.errors.dataNascimento)}
+                            helperText={formik.touched.dataNascimento && formik.errors.dataNascimento}
                             style={{ marginTop: '10px' }}
                         />
                         <TextField
-                            id="local_nascimento"
-                            name="local_nascimento"
+                            id="localNascimento"
+                            name="localNascimento"
                             label="Local nascimento*"
                             variant="standard"
-                            value={formik.values.local_nascimento}
+                            value={formik.values.localNascimento}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.local_nascimento && Boolean(formik.errors.local_nascimento)}
-                            helperText={formik.touched.local_nascimento && formik.errors.local_nascimento}
+                            error={formik.touched.localNascimento && Boolean(formik.errors.localNascimento)}
+                            helperText={formik.touched.localNascimento && formik.errors.localNascimento}
                             style={{ marginTop: '10px' }}
                         />
                         <TextField
@@ -483,16 +488,16 @@ export default function CadastroFuncionario({cnpj}) {
                         />
                         <FormControl
                             variant="standard"
-                            error={formik.touched.orgao_expedidor && Boolean(formik.errors.orgao_expedidor)}
+                            error={formik.touched.orgaoExpedidor && Boolean(formik.errors.orgaoExpedidor)}
                             fullWidth
                             style={{textAlign: 'left'}}
                         >
-                            <InputLabel id="orgao_expedidor-label">Órgão expedidor</InputLabel>
+                            <InputLabel id="orgaoExpedidor-label">Órgão expedidor</InputLabel>
                             <Select
-                                labelId="orgao_expedidor-label"
-                                id="orgao_expedidor"
-                                name="orgao_expedidor"
-                                value={formik.values.orgao_expedidor}
+                                labelId="orgaoExpedidor-label"
+                                id="orgaoExpedidor"
+                                name="orgaoExpedidor"
+                                value={formik.values.orgaoExpedidor}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             >
@@ -511,20 +516,20 @@ export default function CadastroFuncionario({cnpj}) {
                                 <MenuItem value="MEX">Ministério do Exército (MEX)</MenuItem>
                                 <MenuItem value="MMA">Ministério da Marinha (MMA)</MenuItem>
                             </Select>
-                            {formik.touched.orgao_expedidor && formik.errors.orgao_expedidor && (
-                                <FormHelperText>{formik.errors.orgao_expedidor}</FormHelperText>
+                            {formik.touched.orgaoExpedidor && formik.errors.orgaoExpedidor && (
+                                <FormHelperText>{formik.errors.orgaoExpedidor}</FormHelperText>
                             )}
                         </FormControl>
                         <TextField
-                            id="data_rg"
-                            name="data_rg"
+                            id="dataRg"
+                            name="dataRg"
                             label="Data de expedição"
                             type="date"
                             InputLabelProps={{ shrink: true }}
-                            value={formik.values.data_rg}
+                            value={formik.values.dataRg}
                             onChange={formik.handleChange}
-                            error={formik.touched.data_rg && Boolean(formik.errors.data_rg)}
-                            helperText={formik.touched.data_rg && formik.errors.data_rg}
+                            error={formik.touched.dataRg && Boolean(formik.errors.dataRg)}
+                            helperText={formik.touched.dataRg && formik.errors.dataRg}
                             style={{ marginTop: '10px' }}
                         />
                         <Button onClick={handleNext}style={{alignItems: 'right', marginBottom: '15px'}}>Próximo</Button>
@@ -558,28 +563,28 @@ export default function CadastroFuncionario({cnpj}) {
                                 style={{ width: '80%' }}
                             />
                             <TextField
-                                id="numero_casa"
-                                name="numero_casa"
+                                id="numeroCasa"
+                                name="numeroCasa"
                                 label="Número*"
                                 variant="standard"
-                                value={formik.values.numero_casa}
+                                value={formik.values.numeroCasa}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                error={formik.touched.numero_casa && Boolean(formik.errors.numero_casa)}
-                                helperText={formik.touched.numero_casa && formik.errors.numero_casa}
+                                error={formik.touched.numeroCasa && Boolean(formik.errors.numeroCasa)}
+                                helperText={formik.touched.numeroCasa && formik.errors.numeroCasa}
                                 style={{ width: '20%' }}
                             />
                         </Box>
                         <TextField
-                            id="complemento_casa"
-                            name="complemento_casa"
+                            id="complementoCasa"
+                            name="complementoCasa"
                             label="Complemento"
                             variant="standard"
-                            value={formik.values.complemento_casa}
+                            value={formik.values.complementoCasa}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.complemento_casa && Boolean(formik.errors.complemento_casa)}
-                            helperText={formik.touched.complemento_casa && formik.errors.complemento_casa}
+                            error={formik.touched.complementoCasa && Boolean(formik.errors.complementoCasa)}
+                            helperText={formik.touched.complementoCasa && formik.errors.complementoCasa}
                         />
                         <TextField
                             id="bairro"
@@ -620,41 +625,41 @@ export default function CadastroFuncionario({cnpj}) {
                 {step === 2 && (
                     <Box className={styles['formulario']}>
                         <TextField
-                            id="nome_mae"
-                            name="nome_mae"
+                            id="nomeMae"
+                            name="nomeMae"
                             label="Nome da mãe*"
                             variant="standard"
-                            value={formik.values.nome_mae}
+                            value={formik.values.nomeMae}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.nome_mae && Boolean(formik.errors.nome_mae)}
-                            helperText={formik.touched.nome_mae && formik.errors.nome_mae}
+                            error={formik.touched.nomeMae && Boolean(formik.errors.nomeMae)}
+                            helperText={formik.touched.nomeMae && formik.errors.nomeMae}
                             style={{ marginTop: '10px' }}
                         />
                         <TextField
-                            id="nome_pai"
-                            name="nome_pai"
+                            id="nomePai"
+                            name="nomePai"
                             label="Nome do pai"
                             variant="standard"
-                            value={formik.values.nome_pai}
+                            value={formik.values.nomePai}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.nome_pai && Boolean(formik.errors.nome_pai)}
-                            helperText={formik.touched.nome_pai && formik.errors.nome_pai}
+                            error={formik.touched.nomePai && Boolean(formik.errors.nomePai)}
+                            helperText={formik.touched.nomePai && formik.errors.nomePai}
                             style={{ marginTop: '10px' }}
                         />
                         <FormControl
                             variant="standard"
-                            error={formik.touched.estado_civil && Boolean(formik.errors.estado_civil)}
+                            error={formik.touched.estadoCivil && Boolean(formik.errors.estadoCivil)}
                             fullWidth
                             style={{textAlign: 'left'}}
                         >
-                            <InputLabel id="estado_civil-label">Estado civil*</InputLabel>
+                            <InputLabel id="estadoCivil-label">Estado civil*</InputLabel>
                             <Select
-                                labelId="estado_civil-label"
-                                id="estado_civil"
-                                name="estado_civil"
-                                value={formik.values.estado_civil}
+                                labelId="estadoCivil-label"
+                                id="estadoCivil"
+                                name="estadoCivil"
+                                value={formik.values.estadoCivil}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             >
@@ -668,36 +673,36 @@ export default function CadastroFuncionario({cnpj}) {
                                 <MenuItem value="viuvo">Viúvo(a)</MenuItem>
                                 <MenuItem value="uniaoEstavel">União estável</MenuItem>
                             </Select>
-                            {formik.touched.estado_civil && formik.errors.estado_civil && (
-                                <FormHelperText>{formik.errors.estado_civil}</FormHelperText>
+                            {formik.touched.estadoCivil && formik.errors.estadoCivil && (
+                                <FormHelperText>{formik.errors.estadoCivil}</FormHelperText>
                             )}
                         </FormControl>
                         <TextField
-                            id="nome_conjuge"
-                            name="nome_conjuge"
+                            id="nomeConjuge"
+                            name="nomeConjuge"
                             label="Nome do cônjuge"
                             variant="standard"
-                            value={formik.values.nome_conjuge}
+                            value={formik.values.nomeConjuge}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.nome_conjuge && Boolean(formik.errors.nome_conjuge)}
-                            helperText={formik.touched.nome_conjuge && formik.errors.nome_conjuge}
+                            error={formik.touched.nomeConjuge && Boolean(formik.errors.nomeConjuge)}
+                            helperText={formik.touched.nomeConjuge && formik.errors.nomeConjuge}
                             style={{ marginTop: '10px' }}
                         />
                         <TextField
-                            id="qnt_dependente"
-                            name="qnt_dependente"
+                            id="qntDependente"
+                            name="qntDependente"
                             label="Quantidade dependentes*"
                             variant="standard"
-                            value={formik.values.qnt_dependente}
+                            value={formik.values.qntDependente}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.qnt_dependente && Boolean(formik.errors.qnt_dependente)}
-                            helperText={formik.touched.qnt_dependente && formik.errors.qnt_dependente}
+                            error={formik.touched.qntDependente && Boolean(formik.errors.qntDependente)}
+                            helperText={formik.touched.qntDependente && formik.errors.qntDependente}
                             style={{ width: '20%' }}
                         />
-                        {formik.values.qnt_dependente > 0 && (
-                            [...Array(Number(formik.values.qnt_dependente)).keys()].map((index) => (
+                        {formik.values.qntDependente > 0 && (
+                            [...Array(Number(formik.values.qntDependente)).keys()].map((index) => (
                                 <Box key={index}>
                                     <TextField
                                         id={`nomeDependente_${index}`}
@@ -819,14 +824,14 @@ export default function CadastroFuncionario({cnpj}) {
                             )}
                         </InputMask>
                         <TextField
-                            id="numero_ct"
-                            name="numero_ct"
+                            id="numeroCt"
+                            name="numeroCt"
                             label="Carteira de trabalho*"
-                            value={formik.values.numero_ct}
+                            value={formik.values.numeroCt}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.numero_ct && Boolean(formik.errors.numero_ct)}
-                            helperText={formik.touched.numero_ct && formik.errors.numero_ct}
+                            error={formik.touched.numeroCt && Boolean(formik.errors.numeroCt)}
+                            helperText={formik.touched.numeroCt && formik.errors.numeroCt}
                         />
                         <TextField
                             id="serie"
@@ -839,29 +844,29 @@ export default function CadastroFuncionario({cnpj}) {
                             helperText={formik.touched.serie && formik.errors.serie}
                         />
                         <TextField
-                            id="data_ct"
-                            name="data_ct"
+                            id="dataCt"
+                            name="dataCt"
                             label="Data carteira de trabalho*"
                             type="date"
                             InputLabelProps={{ shrink: true }}
-                            value={formik.values.data_ct}
+                            value={formik.values.dataCt}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.data_ct && Boolean(formik.errors.data_ct)}
-                            helperText={formik.touched.data_ct && formik.errors.data_ct}
+                            error={formik.touched.dataCt && Boolean(formik.errors.dataCt)}
+                            helperText={formik.touched.dataCt && formik.errors.dataCt}
                             style={{ marginTop: '10px' }}
                         />
                         <FormControl
                             component="fieldset"
-                            error={formik.touched.carteira_digital && Boolean(formik.errors.carteira_digital)}
+                            error={formik.touched.carteiraDigital && Boolean(formik.errors.carteiraDigital)}
                             style={{textAlign: 'left'}}
                         >
                         <FormControlLabel
                             control={
                                 <Checkbox
-                                id="carteira_digital"
-                                name="carteira_digital"
-                                checked={formik.values.carteira_digital}
+                                id="carteiraDigital"
+                                name="carteiraDigital"
+                                checked={formik.values.carteiraDigital}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 color="primary"
@@ -869,19 +874,19 @@ export default function CadastroFuncionario({cnpj}) {
                             }
                             label="Carteira digital"
                             />
-                            {formik.touched.carteira_digital && formik.errors.carteira_digital && (
-                            <FormHelperText>{formik.errors.carteira_digital}</FormHelperText>
+                            {formik.touched.carteiraDigital && formik.errors.carteiraDigital && (
+                            <FormHelperText>{formik.errors.carteiraDigital}</FormHelperText>
                             )}
                         </FormControl>
                         <TextField
-                            id="titulo_eleitoral"
-                            name="titulo_eleitoral"
+                            id="tituloEleitoral"
+                            name="tituloEleitoral"
                             label="Título eleitoral"
-                            value={formik.values.titulo_eleitoral}
+                            value={formik.values.tituloEleitoral}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.titulo_eleitoral && Boolean(formik.errors.titulo_eleitoral)}
-                            helperText={formik.touched.titulo_eleitoral && formik.errors.titulo_eleitoral}
+                            error={formik.touched.tituloEleitoral && Boolean(formik.errors.tituloEleitoral)}
+                            helperText={formik.touched.tituloEleitoral && formik.errors.tituloEleitoral}
                         />
                         <TextField
                             id="zona"
@@ -924,16 +929,16 @@ export default function CadastroFuncionario({cnpj}) {
                             style={{ marginTop: '10px' }}
                         />
                         <TextField
-                            id="data_admissao"
-                            name="data_admissao"
+                            id="dataAdmissao"
+                            name="dataAdmissao"
                             label="Data de admissão*"
                             type="date"
                             InputLabelProps={{ shrink: true }}
-                            value={formik.values.data_admissao}
+                            value={formik.values.dataAdmissao}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.data_admissao && Boolean(formik.errors.data_admissao)}
-                            helperText={formik.touched.data_admissao && formik.errors.data_admissao}
+                            error={formik.touched.dataAdmissao && Boolean(formik.errors.dataAdmissao)}
+                            helperText={formik.touched.dataAdmissao && formik.errors.dataAdmissao}
                             style={{ marginTop: '10px' }}
                         />
                         <CurrencyInput
@@ -949,16 +954,16 @@ export default function CadastroFuncionario({cnpj}) {
                         />
                         <FormControl
                             variant="standard"
-                            error={formik.touched.contrato_experiencia && Boolean(formik.errors.contrato_experiencia)}
+                            error={formik.touched.contratoExperiencia && Boolean(formik.errors.contratoExperiencia)}
                             fullWidth
                             style={{textAlign: 'left'}}
                         >
-                            <InputLabel id="contrato_experiencia-label">Contrato de experiência</InputLabel>
+                            <InputLabel id="contratoExperiencia-label">Contrato de experiência</InputLabel>
                             <Select
-                                labelId="contrato_experiencia-label"
-                                id="contrato_experiencia"
-                                name="contrato_experiencia"
-                                value={formik.values.contrato_experiencia}
+                                labelId="contratoExperiencia-label"
+                                id="contratoExperiencia"
+                                name="contratoExperiencia"
+                                value={formik.values.contratoExperiencia}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                             >
@@ -967,9 +972,10 @@ export default function CadastroFuncionario({cnpj}) {
                                 </MenuItem>
                                 <MenuItem value="30+30dias">30 + 30 dias</MenuItem>
                                 <MenuItem value="45+45dias">45 + 45 dias</MenuItem>
+                                <MenuItem value="Nenhum">Não se aplica</MenuItem>
                             </Select>
-                            {formik.touched.contrato_experiencia && formik.errors.contrato_experiencia && (
-                                <FormHelperText>{formik.errors.contrato_experiencia}</FormHelperText>
+                            {formik.touched.contratoExperiencia && formik.errors.contratoExperiencia && (
+                                <FormHelperText>{formik.errors.contratoExperiencia}</FormHelperText>
                             )}
                         </FormControl>
                         <TextField
@@ -1028,14 +1034,14 @@ export default function CadastroFuncionario({cnpj}) {
                         </FormControl>
                         <FormControl
                             component="fieldset"
-                            error={formik.touched.quebra_de_caixa && Boolean(formik.errors.quebra_de_caixa)}
+                            error={formik.touched.quebraDeCaixa && Boolean(formik.errors.quebraDeCaixa)}
                         >
                         <FormControlLabel
                             control={
                                 <Checkbox
-                                id="quebra_de_caixa"
-                                name="quebra_de_caixa"
-                                checked={formik.values.quebra_de_caixa}
+                                id="quebraDeCaixa"
+                                name="quebraDeCaixa"
+                                checked={formik.values.quebraDeCaixa}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 color="primary"
@@ -1043,20 +1049,20 @@ export default function CadastroFuncionario({cnpj}) {
                             }
                             label="Quebra de caixa"
                             />
-                            {formik.touched.quebra_de_caixa && formik.errors.quebra_de_caixa && (
-                            <FormHelperText>{formik.errors.quebra_de_caixa}</FormHelperText>
+                            {formik.touched.quebraDeCaixa && formik.errors.quebraDeCaixa && (
+                            <FormHelperText>{formik.errors.quebraDeCaixa}</FormHelperText>
                             )}
                         </FormControl>
                         <FormControl
                             component="fieldset"
-                            error={formik.touched.vale_transporte && Boolean(formik.errors.vale_transporte)}
+                            error={formik.touched.valeTransporte && Boolean(formik.errors.valeTransporte)}
                         >
                         <FormControlLabel
                             control={
                                 <Checkbox
-                                id="vale_transporte"
-                                name="vale_transporte"
-                                checked={formik.values.vale_transporte}
+                                id="valeTransporte"
+                                name="valeTransporte"
+                                checked={formik.values.valeTransporte}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 color="primary"
@@ -1064,20 +1070,20 @@ export default function CadastroFuncionario({cnpj}) {
                             }
                             label="Vale transporte"
                             />
-                            {formik.touched.vale_transporte && formik.errors.vale_transporte && (
-                            <FormHelperText>{formik.errors.vale_transporte}</FormHelperText>
+                            {formik.touched.valeTransporte && formik.errors.valeTransporte && (
+                            <FormHelperText>{formik.errors.valeTransporte}</FormHelperText>
                             )}
                         </FormControl>
                         <TextField
-                            id="quantidade_vales"
-                            name="quantidade_vales"
+                            id="quantidadeVales"
+                            name="quantidadeVales"
                             label="Quantidade vales"
                             variant="standard"
-                            value={formik.values.quantidade_vales}
+                            value={formik.values.quantidadeVales}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.quantidade_vales && Boolean(formik.errors.quantidade_vales)}
-                            helperText={formik.touched.quantidade_vales && formik.errors.quantidade_vales}
+                            error={formik.touched.quantidadeVales && Boolean(formik.errors.quantidadeVales)}
+                            helperText={formik.touched.quantidadeVales && formik.errors.quantidadeVales}
                             style={{ marginTop: '10px' }}
                         />
                         <Box className={styles['botoes']}>
