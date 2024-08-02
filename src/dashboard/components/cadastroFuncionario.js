@@ -5,6 +5,9 @@ import axios from 'axios';
 import { TextField, Button, Stepper, Step, StepLabel, Box, Select, MenuItem, FormControl, FormControlLabel, InputLabel, FormHelperText, Checkbox } from '@mui/material';
 import styles from '../styles/cadastroFuncionario.module.css';
 import { motion } from "framer-motion";
+import InputMask from 'react-input-mask';
+import PhoneInput from '../../components/form/PhoneInput';
+import CurrencyInput from '../../components/form/CurrencyInput';
 
 const formatDate = (date) => {
     if (!date) return null;
@@ -154,7 +157,7 @@ const validationSchemas  = [
             .nullable()
             .required('Campo obrigatório'),
         salario: yup
-            .number('Salário')
+            .string('Salário')
             .required('Campo obrigatório'),
         contrato_experiencia: yup
             .string('Contrato experiência')
@@ -351,15 +354,14 @@ export default function CadastroFuncionario({cnpj}) {
                             error={formik.touched.email && Boolean(formik.errors.email)}
                             helperText={formik.touched.email && formik.errors.email}
                         />
-                        <TextField
+                        <PhoneInput
                             id="telefone"
                             name="telefone"
-                            label="Telefone*"
-                            variant="standard"
-                            autoComplete="tel"
+                            label="Telefone"
                             value={formik.values.telefone}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
+                            onFocus={formik.handleFocus}
                             error={formik.touched.telefone && Boolean(formik.errors.telefone)}
                             helperText={formik.touched.telefone && formik.errors.telefone}
                         />
@@ -453,15 +455,23 @@ export default function CadastroFuncionario({cnpj}) {
                             helperText={formik.touched.nacionalidade && formik.errors.nacionalidade}
                             style={{ marginTop: '10px' }}
                         />
-                        <TextField
-                            id="cpf"
-                            name="cpf"
-                            label="CPF*"
-                            value={formik.values.cpf}
-                            onChange={formik.handleChange}
-                            error={formik.touched.cpf && Boolean(formik.errors.cpf)}
-                            helperText={formik.touched.cpf && formik.errors.cpf}
-                        />
+                        <InputMask
+                        mask="999.999.999-99"
+                        value={formik.values.cpf}
+                        onChange={formik.handleChange}
+                        >
+                            {() => (
+                                <TextField
+                                    id="cpf"
+                                    name="cpf"
+                                    label="CPF*"
+                                    value={formik.values.cpf}
+                                    onChange={formik.handleChange}
+                                    error={formik.touched.cpf && Boolean(formik.errors.cpf)}
+                                    helperText={formik.touched.cpf && formik.errors.cpf}
+                                />
+                            )}
+                        </InputMask>
                         <TextField
                             id="rg"
                             name="rg"
@@ -714,16 +724,24 @@ export default function CadastroFuncionario({cnpj}) {
                                         helperText={formik.touched.dependentes && formik.touched.dependentes[index]?.dataNascimentoDependente && formik.errors.dependentes?.[index]?.dataNascimentoDependente}
                                         style={{ marginTop: '10px' }}
                                     />
-                                    <TextField
-                                        id={`cpfDependente_${index}`}
-                                        name={`dependentes[${index}].cpfDependente`}
-                                        label="CPF*"
-                                        value={formik.values.dependentes[index]?.cpfDependente || ''}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        error={formik.touched.dependentes && formik.touched.dependentes[index]?.cpfDependente && Boolean(formik.errors.dependentes?.[index]?.cpfDependente)}
-                                        helperText={formik.touched.dependentes && formik.touched.dependentes[index]?.cpfDependente && formik.errors.dependentes?.[index]?.cpfDependente}
-                                    />
+                                    <InputMask
+                                    mask="999.999.999-99"
+                                    value={formik.values.cpfDependente}
+                                    onChange={formik.handleChange}
+                                    >
+                                        {() => (
+                                            <TextField
+                                                id={`cpfDependente_${index}`}
+                                                name={`dependentes[${index}].cpfDependente`}
+                                                label="CPF*"
+                                                value={formik.values.dependentes[index]?.cpfDependente || ''}
+                                                onChange={formik.handleChange}
+                                                onBlur={formik.handleBlur}
+                                                error={formik.touched.dependentes && formik.touched.dependentes[index]?.cpfDependente && Boolean(formik.errors.dependentes?.[index]?.cpfDependente)}
+                                                helperText={formik.touched.dependentes && formik.touched.dependentes[index]?.cpfDependente && formik.errors.dependentes?.[index]?.cpfDependente}
+                                            />
+                                        )}
+                                    </InputMask>
                                     <TextField
                                         id={`localNascimentoDependente_${index}`}
                                         name={`dependentes[${index}].localNascimentoDependente`}
@@ -782,16 +800,24 @@ export default function CadastroFuncionario({cnpj}) {
                                 <FormHelperText>{formik.errors.escolaridade}</FormHelperText>
                             )}
                         </FormControl>
-                        <TextField
-                            id="pis"
-                            name="pis"
-                            label="PIS*"
+                        <InputMask
+                            mask="999.99999.99-9"
                             value={formik.values.pis}
                             onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.pis && Boolean(formik.errors.pis)}
-                            helperText={formik.touched.pis && formik.errors.pis}
-                        />
+                        >
+                            {() => (
+                                <TextField
+                                    id="pis"
+                                    name="pis"
+                                    label="PIS*"
+                                    value={formik.values.pis}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    error={formik.touched.pis && Boolean(formik.errors.pis)}
+                                    helperText={formik.touched.pis && formik.errors.pis}
+                                />
+                            )}
+                        </InputMask>
                         <TextField
                             id="numero_ct"
                             name="numero_ct"
@@ -910,17 +936,16 @@ export default function CadastroFuncionario({cnpj}) {
                             helperText={formik.touched.data_admissao && formik.errors.data_admissao}
                             style={{ marginTop: '10px' }}
                         />
-                        <TextField
+                        <CurrencyInput
                             id="salario"
                             name="salario"
-                            label="Salário*"
-                            variant="standard"
+                            label="Salário"
                             value={formik.values.salario}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
+                            onFocus={formik.handleFocus}
                             error={formik.touched.salario && Boolean(formik.errors.salario)}
                             helperText={formik.touched.salario && formik.errors.salario}
-                            style={{ marginTop: '10px' }}
                         />
                         <FormControl
                             variant="standard"

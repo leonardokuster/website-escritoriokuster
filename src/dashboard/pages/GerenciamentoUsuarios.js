@@ -3,7 +3,7 @@ import axios from 'axios';
 import CadastroEmpresa from '../components/cadastroEmpresa';
 import CadastroFuncionario from '../components/cadastroFuncionario';
 
-export default function GerenciamentoUsuarios({ usuario_id }) {
+export default function GerenciamentoUsuarios() {
   const [empresa, setEmpresa] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,35 +20,46 @@ export default function GerenciamentoUsuarios({ usuario_id }) {
         try {
             const response = await axios.get(`http://localhost:3001/companies/${usuario_id}`);
             if (response.data && response.data.cnpj) {
-            setEmpresa(response.data);
+                setEmpresa(response.data);
             } else {
-            setEmpresa(null);
+                setEmpresa(null);
             }
         } catch (error) {
             console.error('Erro ao verificar empresa do usuário:', error);
-            setError(error.response?.data?.message || 'Erro ao verificar empresa');
-            setEmpresa(null);
+            if (error.response && error.response.status === 404) {
+                setEmpresa(null);
+            } else {
+                setError(error.response?.data?.message || 'Erro ao verificar empresa');
+            }
         } finally {
             setLoading(false);
         }
     };
 
     verificarEmpresa();
-  }, [usuario_id]);
+  }, []);
+
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div>
       {empresa ? (
         <div>
-          <h2>Gerenciamento de funcionários para a empresa {empresa.nome_fantasia}</h2>
+          <h2>Gerenciamento de funcionários para a empresa {empresa.nomeFantasia}</h2>
           <CadastroFuncionario empresa={empresa} />
         </div>
       ) : (
         <div>
           <h2>Cadastro de nova empresa</h2>
-          <CadastroEmpresa usuario_id={usuario_id} />
+          <CadastroEmpresa />
         </div>
       )}
     </div>
   );
-};
+}

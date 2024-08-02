@@ -5,61 +5,119 @@ import axios from 'axios';
 import { TextField, Button, Box } from '@mui/material';
 import styles from '../styles/cadastroEmpresa.module.css';
 import { motion } from "framer-motion";
+import InputMask from 'react-input-mask';
+import PhoneInput from '../../components/form/PhoneInput';
+import CurrencyInput from '../../components/form/CurrencyInput';
 
 const validationSchema = yup.object({
     cnpj: yup
         .string('CNPJ')
-        .required('Campo obrigatório'),
-    nome: yup
-        .string('Nome')
-        .matches(/^[a-zA-Z\s]+$/, 'Nome inválido, por favor tente outro')
-        .required('Campo obrigatório'),
-    razao_social: yup
+        .when('possuiEmpresa', {
+            is: true,
+            then: () => yup.string().required('Campo obrigatório'),
+            otherwise: () => yup.string().notRequired(),
+        }),
+    nomeFantasia: yup
+        .string('Nome fantasia')
+        .when('possuiEmpresa', {
+            is: true,
+            then: () => yup.string().required('Campo obrigatório'),
+            otherwise: () => yup.string().notRequired(),
+        }),
+    razaoSocial: yup
         .string('Razão social')
-        .required('Campo obrigatório'),
-    atividades_exercidas: yup
+        .when('possuiEmpresa', {
+            is: true,
+            then: () => yup.string().required('Campo obrigatório'),
+            otherwise: () => yup.string().notRequired(),
+        }),
+    atividadesExercidas: yup
         .string('Atividades exercidas')
-        .required('Campo obrigatório'),
-    capital_social: yup
+        .when('possuiEmpresa', {
+            is: true,
+            then: () => yup.string().required('Campo obrigatório'),
+            otherwise: () => yup.string().notRequired(),
+        }),
+    capitalSocial: yup
         .string('Capital social')
         .required('Campo obrigatório'),
+    cep: yup
+        .string('CEP')
+        .when('possuiEmpresa', {
+            is: true,
+            then: () => yup.string().required('Campo obrigatório'),
+            otherwise: () => yup.string().notRequired(),
+        }),
     endereco: yup
         .string('Endereço')
-        .required('Campo obrigatório'),
-    email: yup
+        .when('possuiEmpresa', {
+            is: true,
+            then: () => yup.string().required('Campo obrigatório'),
+            otherwise: () => yup.string().notRequired(),
+        }),
+    numeroEmpresa: yup
+        .string('Número')
+        .when('possuiEmpresa', {
+            is: true,
+            then: () => yup.string().required('Campo obrigatório'),
+            otherwise: () => yup.string().notRequired(),
+        }),
+    complementoEmpresa: yup
+        .string('Complemento'),
+    emailEmpresa: yup
         .string('E-mail')
-        .email('Insira um e-mail válido')
-        .matches(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i, 'Insira um e-mail válido')
-        .required('Campo obrigatório'),
-    telefone: yup
+        .when('possuiEmpresa', {
+            is: true,
+            then: () => yup.string().required('Campo obrigatório'),
+            otherwise: () => yup.string().notRequired(),
+        }),
+    telefoneEmpresa: yup
         .string('Telefone')
-        .required('Campo obrigatório'),
+        .when('possuiEmpresa', {
+            is: true,
+            then: () => yup.string().required('Campo obrigatório'),
+            otherwise: () => yup.string().notRequired(),
+        }),
     qntSocios: yup
         .number()
         .min(1, 'Quantidade de sócios deve ser maior ou igual a 1')
-        .required('Quantidade de sócios é obrigatória'),
+        .when('possuiEmpresa', {
+            is: true,
+            then: () => yup.string().required('Quantidade de sócios é obrigatória'),
+            otherwise: () => yup.string().notRequired(),
+        }),
     socios: yup.array().of(
         yup.object().shape({
-            nome_socio: yup
+            nomeSocio: yup
                 .string()
-                .required('Nome do sócio é obrigatório'),
+                .when('possuiEmpresa', {
+                    is: true,
+                    then: () => yup.string().required('Nome do sócio é obrigatório'),
+                    otherwise: () => yup.string().notRequired(),
+                }),
         })
     ),
 });
 
 export default function CadastroEmpresa() {
+    const [nomeFantasia, setNomeFantasia] = useState('');
+    const [cnpj, setCnpj] = useState('');
+    const [endereco, setEndereco] = useState('');
     const [message, setMessage] = useState('');
 
     const formik = useFormik({
         initialValues: {
             cnpj: '',
-            nome_fantasia: '',
-            razao_social: '',
-            atividades_exercidas: '',
-            capital_social: '',
+            nomeFantasia: '',
+            razaoSocial: '',
+            atividadesExercidas: '',
+            capitalSocial: '',
+            cep: '',
             endereco: '',
-            email: '',
-            telefone: '',
+            numeroEmpresa: '',
+            complementoEmpresa: '',
+            emailEmpresa: '',
+            telefoneEmpresa: '',
             qntSocios: 1,
             socios: [],
         },
@@ -69,12 +127,19 @@ export default function CadastroEmpresa() {
         onSubmit: async (values, { resetForm }) => {
             const token = localStorage.getItem('token');
             const usuario_id = localStorage.getItem('usuario_id');
+
+            if (!usuario_id) {
+                setMessage('ID do usuário não encontrado');
+                return;
+              }
         
             try {
                 const payload = {
                     ...values,
-                    capital_social: parseFloat(values.capital_social.replace('R$', '').replace('.', '').replace(',', '.')),
-                    usuario_id
+                    capitalSocial: parseFloat(values.capitalSocial.replace('R$', '').replace('.', '').replace(',', '.')),
+                    usuario_id,
+                    cnpj,
+                    nomeFantasia,
                 };
         
                 const response = await axios.post(`http://localhost:3001/companies/${usuario_id}`, payload, {
@@ -90,6 +155,16 @@ export default function CadastroEmpresa() {
         },
     });
 
+    const fetchAddress = async (cep) => {
+        try {
+            const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+            setEndereco(response.data.logradouro);
+            formik.setFieldValue('endereco', response.data.logradouro);
+        } catch (error) {
+            console.error('Erro ao buscar endereço:', error);
+        }
+    };
+
     return (
         <motion.div
             className={styles['cadastroform']}
@@ -100,94 +175,136 @@ export default function CadastroEmpresa() {
 
             <form onSubmit={formik.handleSubmit}>
                 <Box className={styles['formulario']}>
-                    <TextField
-                        id="cnpj"
-                        name="cnpj"
-                        label="CNPJ"
+                    <InputMask
+                        mask="99.999.999/9999-99"
                         value={formik.values.cnpj}
                         onChange={formik.handleChange}
-                        error={formik.touched.cnpj && Boolean(formik.errors.cnpj)}
-                        helperText={formik.touched.cnpj && formik.errors.cnpj}
-                    />
+                    >
+                        {() => (
+                            <TextField
+                                id="cnpj"
+                                name="cnpj"
+                                label="CNPJ"
+                                error={formik.touched.cnpj && Boolean(formik.errors.cnpj)}
+                                helperText={formik.touched.cnpj && formik.errors.cnpj}
+                            />
+                        )}
+                    </InputMask>
                     <TextField
-                        id="nome_fantasia"
-                        name="nome_fantasia"
+                        id="nomeFantasia"
+                        name="nomeFantasia"
                         label="Nome fantasia"
                         variant="standard"
-                        value={formik.values.nome_fantasia}
+                        value={formik.values.nomeFantasia}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.nome_fantasia && Boolean(formik.errors.nome_fantasia)}
-                        helperText={formik.touched.nome_fantasia && formik.errors.nome_fantasia}
+                        error={formik.touched.nomeFantasia && Boolean(formik.errors.nomeFantasia)}
+                        helperText={formik.touched.nomeFantasia && formik.errors.nomeFantasia}
                         style={{ marginTop: '10px' }}
                     />
                     <TextField
-                        id="razao_social"
-                        name="razao_social"
+                        id="razaoSocial"
+                        name="razaoSocial"
                         label="Razão social"
                         variant="standard"
-                        value={formik.values.razao_social}
+                        value={formik.values.razaoSocial}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.razao_social && Boolean(formik.errors.razao_social)}
-                        helperText={formik.touched.razao_social && formik.errors.razao_social}
+                        error={formik.touched.razaoSocial && Boolean(formik.errors.razaoSocial)}
+                        helperText={formik.touched.razaoSocial && formik.errors.razaoSocial}
                     />
                     <TextField
-                        id="atividades_exercidas"
-                        name="atividades_exercidas"
+                        id="atividadesExercidas"
+                        name="atividadesExercidas"
                         label="Atividades exercidas"
                         variant="standard"
-                        value={formik.values.atividades_exercidas}
+                        value={formik.values.atividadesExercidas}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.atividades_exercidas && Boolean(formik.errors.atividades_exercidas)}
-                        helperText={formik.touched.atividades_exercidas && formik.errors.atividades_exercidas}
+                        error={formik.touched.atividadesExercidas && Boolean(formik.errors.atividadesExercidas)}
+                        helperText={formik.touched.atividadesExercidas && formik.errors.atividadesExercidas}
                     />
-                    <TextField
-                        id="capital_social"
-                        name="capital_social"
+                    <CurrencyInput
+                        id="capitalSocial"
+                        name="capitalSocial"
                         label="Capital social"
-                        variant="standard"
-                        value={formik.values.capital_social}
+                        value={formik.values.capitalSocial}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.capital_social && Boolean(formik.errors.capital_social)}
-                        helperText={formik.touched.capital_social && formik.errors.capital_social}
+                        onFocus={formik.handleFocus}
+                        error={formik.touched.capitalSocial && Boolean(formik.errors.capitalSocial)}
+                        helperText={formik.touched.capitalSocial && formik.errors.capitalSocial}
                     />
                     <TextField
-                        id="endereco"
-                        name="endereco"
-                        label="Endereço"
+                        id="cep"
+                        name="cep"
+                        label="CEP"
+                        value={formik.values.cep}
+                        onChange={(e) => {
+                            formik.handleChange(e);
+                            fetchAddress(e.target.value);
+                        }}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.cep && Boolean(formik.errors.cep)}
+                        helperText={formik.touched.cep && formik.errors.cep}
+                        style={{ marginTop: '10px' }}
+                    />
+                    <Box className={styles['endereco']}>
+                        <TextField
+                            id="endereco"
+                            name="endereco"
+                            label="Endereço"
+                            value={endereco}
+                            disabled
+                            error={formik.touched.endereco && Boolean(formik.errors.endereco)}
+                            helperText={formik.touched.endereco && formik.errors.endereco}
+                            style={{ width: '80%' }}
+                        />
+                        <TextField
+                            id="numeroEmpresa"
+                            name="numeroEmpresa"
+                            label="Número"
+                            variant="standard"
+                            value={formik.values.numeroEmpresa}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            error={formik.touched.numeroEmpresa && Boolean(formik.errors.numeroEmpresa)}
+                            helperText={formik.touched.numeroEmpresa && formik.errors.numeroEmpresa}
+                            style={{ width: '20%' }}
+                        />
+                    </Box>
+                    <TextField
+                        id="complementoEmpresa"
+                        name="complementoEmpresa"
+                        label="Complemento"
                         variant="standard"
-                        value={formik.values.endereco}
+                        value={formik.values.complementoEmpresa}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.endereco && Boolean(formik.errors.endereco)}
-                        helperText={formik.touched.endereco && formik.errors.endereco}
+                        error={formik.touched.complementoEmpresa && Boolean(formik.errors.complementoEmpresa)}
+                        helperText={formik.touched.complementoEmpresa && formik.errors.complementoEmpresa}
                     />
                     <TextField
-                        id="email"
-                        name="email"
+                        id="emailEmpresa"
+                        name="emailEmpresa"
                         label="E-mail"
-                        autoComplete="email"
                         variant="standard"
-                        value={formik.values.email}
+                        value={formik.values.emailEmpresa}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.email && Boolean(formik.errors.email)}
-                        helperText={formik.touched.email && formik.errors.email}
+                        error={formik.touched.emailEmpresa && Boolean(formik.errors.emailEmpresa)}
+                        helperText={formik.touched.emailEmpresa && formik.errors.emailEmpresa}
                     />
-                    <TextField
-                        id="telefone"
-                        name="telefone"
-                        label="Telefone"
-                        variant="standard"
-                        autoComplete="tel"
-                        value={formik.values.telefone}
+                    <PhoneInput
+                        id="telefoneEmpresa"
+                        name="telefoneEmpresa"
+                        label="Telefone da empresa"
+                        value={formik.values.telefoneEmpresa}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.telefone && Boolean(formik.errors.telefone)}
-                        helperText={formik.touched.telefone && formik.errors.telefone}
+                        onFocus={formik.handleFocus}
+                        error={formik.touched.telefoneEmpresa && Boolean(formik.errors.telefoneEmpresa)}
+                        helperText={formik.touched.telefoneEmpresa && formik.errors.telefoneEmpresa}
                     />
                     <TextField
                         id="qntSocios"

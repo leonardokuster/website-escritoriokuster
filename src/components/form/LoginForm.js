@@ -38,6 +38,7 @@ export default function LoginForm() {
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('nome', response.data.usuario.nome);
                 localStorage.setItem('tipo', response.data.usuario.tipo);
+                localStorage.setItem('usuario_id', response.data.usuario.id);
                 resetForm();
                 
                 router.push('/dashboard');              
