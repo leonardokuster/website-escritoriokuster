@@ -127,22 +127,14 @@ export default function CadastroEmpresa() {
         onSubmit: async (values, { resetForm }) => {
             const token = localStorage.getItem('token');
             const usuario_id = localStorage.getItem('usuario_id');
-
+        
             if (!usuario_id) {
                 setMessage('ID do usuário não encontrado');
                 return;
-              }
+            }
         
             try {
-                const payload = {
-                    ...values,
-                    capitalSocial: parseFloat(values.capitalSocial.replace('R$', '').replace('.', '').replace(',', '.')),
-                    usuario_id,
-                    cnpj,
-                    nomeFantasia,
-                };
-        
-                const response = await axios.post(`http://localhost:3001/companies/${usuario_id}`, payload, {
+                const response = await axios.post(`http://localhost:3001/companies/${usuario_id}`, { ...values, usuario_id }, {
                     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                 });
         
