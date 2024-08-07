@@ -2,15 +2,20 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import CadastroEmpresa from '../components/cadastroEmpresa';
 import CadastroFuncionario from '../components/cadastroFuncionario';
+import Link from 'next/link';
+import styles from '../styles/gerenciamentoUsuarios.module.css';
 
 export default function GerenciamentoUsuarios() {
-  const [empresa, setEmpresa] = useState(null);
+  const [empresa, setEmpresa] = useState([]);
+  const [empresaSelecionada, setEmpresaSelecionada] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showCadastroEmpresa, setShowCadastroEmpresa] = useState(false);
 
   useEffect(() => {
     const verificarEmpresa = async () => {
         const usuario_id = localStorage.getItem('usuario_id');
+        
         if (!usuario_id) {
             setError('ID do usuário não fornecido');
             setLoading(false);
@@ -39,6 +44,16 @@ export default function GerenciamentoUsuarios() {
     verificarEmpresa();
   }, []);
 
+  const handleEmpresaChange = (event) => {
+    const empresa_id = event.target.value;
+    const empresa = empresa.find(e => e.id === empresa_id);
+    setEmpresaSelecionada(empresa);
+  };
+
+  const handleFormChange = () => {
+    setShowCadastroEmpresa(true);
+  };
+
   if (loading) {
     return <div>Carregando...</div>;
   }
@@ -51,12 +66,41 @@ export default function GerenciamentoUsuarios() {
     <div>
       {empresa ? (
         <div>
-          <h2>Gerenciamento de funcionários para a empresa {empresa.nomeFantasia}</h2>
-          <CadastroFuncionario empresa={empresa} />
+            {empresa.length > 1 ? (
+                <div> 
+                    <h2>Selecione uma empresa para gerenciar os funcionários</h2>
+                    <select onChange={handleEmpresaChange}>
+                        <option value="">Selecione uma empresa</option>
+                        {empresa.map(empresa => (
+                        <option key={empresa.id} value={empresa.id}>{empresa.nomeFantasia}</option>
+                        ))}
+                    </select>
+                    {empresaSelecionada && (
+                        <div>
+                        <h2>Gerenciamento de funcionários para a empresa {empresaSelecionada.nomeFantasia}</h2>
+                        <CadastroFuncionario empresa={empresaSelecionada} />
+                        </div>
+                    )}
+                </div>
+            ) : (
+                <div> 
+                    {showCadastroEmpresa ? (
+                        <div>
+                            <h2 className={styles['titulo']}>Preencha os dados abaixo para cadastrar uma nova empresa.</h2> 
+                            <CadastroEmpresa />
+                        </div>
+                    ): (
+                        <div>
+                            <h2 className={styles['titulo']}>Gerenciamento de funcionários para a empresa <strong>{empresa.nomeFantasia}</strong>.<br/> Caso queira cadastar uma nova empresa, <Link href="#" onClick={handleFormChange}><strong>clique aqui</strong></Link>.</h2> 
+                            <CadastroFuncionario empresa={empresa} />
+                        </div>
+                    )}            
+                </div>    
+            )}
         </div>
       ) : (
         <div>
-          <h2>Cadastro de nova empresa</h2>
+          <h2>Atualmente você não possui nenhuma empresa cadastrada, preencha os dados abaixo para realizar o cadastro.</h2>
           <CadastroEmpresa />
         </div>
       )}
