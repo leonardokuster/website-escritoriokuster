@@ -35,10 +35,16 @@ export default function LoginForm() {
                 const response = await axios.post('http://localhost:3001/login', values, {
                     headers: { 'Content-Type': 'application/json' },
                 });
-                localStorage.setItem('token', response.data.token);
-                localStorage.setItem('nome', response.data.usuario.nome);
-                localStorage.setItem('tipo', response.data.usuario.tipo);
-                localStorage.setItem('usuario_id', response.data.usuario.id);
+                const { token, usuario } = response.data;
+
+                localStorage.setItem('token', token);
+                localStorage.setItem('nome', usuario.nome);
+                localStorage.setItem('tipo', usuario.tipo);
+                localStorage.setItem('usuario_id', usuario.id);
+                localStorage.setItem('empresa_id', usuario.empresa_id || '');
+
+                console.log(`ID do usuário: ${usuario.id}`);
+                console.log(`ID da empresa: ${usuario.empresa_id || 'Nenhuma empresa associada'}`);
                 resetForm();
                 
                 router.push('/dashboard');              

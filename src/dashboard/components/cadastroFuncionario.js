@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import InputMask from 'react-input-mask';
 import PhoneInput from '../../components/form/PhoneInput';
 import CurrencyInput from '../../components/form/CurrencyInput';
+import moment from 'moment';
 
 const MaskedTextField = ({ mask, value, onChange, onBlur, ...props }) => (
     <InputMask mask={mask} value={value} onChange={onChange} onBlur={onBlur}>
@@ -15,23 +16,7 @@ const MaskedTextField = ({ mask, value, onChange, onBlur, ...props }) => (
     </InputMask>
 );
 
-function formatDate(date) {
-    if (!date) return '';
-
-    const d = new Date(date);
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const year = d.getFullYear();
-
-    return `${year}-${month}-${day}`;
-};
-
-function formatSalary(salary) {
-    if (!salary) return '';
-    return salary.replace(/[^\d,]/g, '').replace(/,/g, '.');
-};
-
-const validationSchemas = [
+const validationSchema = [
     yup.object({
         nome: yup
             .string('Nome completo')
@@ -53,6 +38,7 @@ const validationSchemas = [
             .required('Campo obrigatório'),
         dataNascimento: yup
             .date()
+            .typeError('Data inválida')
             .required('Campo obrigatório'),
         localNascimento: yup
             .string('Local do nascimento')
@@ -72,6 +58,7 @@ const validationSchemas = [
             .notRequired(),
         dataRg: yup
             .date()
+            .typeError('Data inválida')
             .notRequired(),
     }),
     yup.object({
@@ -125,6 +112,7 @@ const validationSchemas = [
                     }),
                 dataNascimentoDependente: yup
                     .date()
+                    .typeError('Data inválida')
                     .when('qntDependente', {
                         is: (qntDependente) => qntDependente > 0,
                         then: () => yup.date().required('Data de nascimento é obrigatória'),
@@ -162,6 +150,7 @@ const validationSchemas = [
             .required('Campo obrigatório'),
         dataCt: yup
             .date()
+            .typeError('Data inválida')
             .required('Campo obrigatório'),
         carteiraDigital: yup
             .string('Carteira digital')
@@ -182,6 +171,7 @@ const validationSchemas = [
             .required('Campo obrigatório'),
         dataAdmissao: yup
             .date()
+            .typeError('Data inválida')
             .required('Campo obrigatório'),
         salario: yup
             .string('Salário*')
@@ -270,42 +260,42 @@ export default function CadastroFuncionario({cnpj}) {
             valeTransporte: false,
             quantidadeVales: '',
         },
-        validationSchema: validationSchemas[step],
+        validationSchema: validationSchema[step],
         validateOnChange: false,  
         validateOnBlur: false,   
         onSubmit: async (values, { resetForm }) => {
             const token = localStorage.getItem('token');
             const empresa_id = localStorage.getItem('empresa_id');
 
-            console.log('Empresa ID:', empresaId);
+            console.log('Empresa ID:', empresa_id);
+            console.log('Valores enviados:', values);
 
-            if (!empresaId) {
+            if (!empresa_id) {
                 setMessage('Empresa ID não encontrado');
                 return;
             }
 
-            const formattedValues = {
-                ...values,
-                empresa_id,
-                dataNascimento: formatDate(values.dataNascimento),
-                dataRg: formatDate(values.dataRg),
-                dataCt: formatDate(values.dataCt),
-                dataAdmissao: formatDate(values.dataAdmissao),
-                salario: formatSalary(values.salario),
-                dependentes: values.dependentes.map(dependente => ({
-                    ...dependente,
-                    dataNascimentoDependente: formatDate(dependente.dataNascimentoDependente)
-                }))
-            };            
-
             try {
-                const response = await axios.post(`http://localhost:3001/employees/${empresa_id}`, formattedValues, {
+                await validationSchema[step].validate(values);
+                console.log('Validação bem-sucedida');
+
+                const response = await axios.post(`http://localhost:3001/employees/${empresa_id}`, { ...values, empresa_id }, {
                     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                 });
                 setMessage(response.data.message);
                 resetForm();
             } catch (err) {
-                setMessage(err.response?.data?.message || 'Erro desconhecido');
+                console.error('Erro:', err);
+                if (err.response) {
+                    setMessage('Erro ao cadastrar funcionário: ' + err.response.data.message);
+                    setErrorDetails(JSON.stringify(err.response.data));
+                } else if (err instanceof yup.ValidationError) {
+                    setMessage('Erro de validação: ' + err.errors.join(', '));
+                    setErrorDetails(err.errors.join(', '));
+                } else {
+                    setMessage('Erro desconhecido ao cadastrar funcionário');
+                    setErrorDetails(err.message);
+                }
             }
         },
     });
@@ -463,7 +453,7 @@ export default function CadastroFuncionario({cnpj}) {
                         <TextField
                             id="dataNascimento"
                             name="dataNascimento"
-                            label="Data de Nascimento*"
+                            label="Data de Nascimento"
                             type="date"
                             InputLabelProps={{ shrink: true }}
                             value={formik.values.dataNascimento}
@@ -750,6 +740,7 @@ export default function CadastroFuncionario({cnpj}) {
                                         id={`dataNascimentoDependente${index}`}
                                         name={`dependentes[${index}].dataNascimentoDependente`}
                                         label="Data nascimento*"
+                                        InputLabelProps={{ shrink: true }}
                                         type="date"
                                         value={formik.values.dependentes[index]?.dataNascimentoDependente || ''}
                                         onChange={formik.handleChange}
