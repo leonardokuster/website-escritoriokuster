@@ -7,7 +7,7 @@ const TaxCalculator = () => {
   const [results, setResults] = useState(null);
 
   const calculateTax = () => {
-    axios.post('http://localhost:3001/calculate', { salary, frequency })
+    axios.post('/api/calculate-tax', { salary, frequency })
       .then(response => setResults(response.data))
       .catch(error => console.error('Error calculating tax:', error));
   };

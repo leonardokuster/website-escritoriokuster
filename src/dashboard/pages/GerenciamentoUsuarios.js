@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import CadastroEmpresa from '../components/cadastroEmpresa';
 import CadastroFuncionario from '../components/cadastroFuncionario';
+import GerenciamentoFuncionarios from '../components/tabelaFuncionarios';
 import Link from 'next/link';
 import styles from '../styles/gerenciamentoUsuarios.module.css';
+import Loader from '@/src/components/Loader';
 
 export default function GerenciamentoUsuarios() {
     const [usuario, setUsuario] = useState(null);
@@ -12,6 +14,7 @@ export default function GerenciamentoUsuarios() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showCadastroEmpresa, setShowCadastroEmpresa] = useState(false);
+    const [showListaFuncionarios, setShowListaFuncionarios] = useState(false);
     const [showTexto, setShowTexto] = useState(true);
 
     useEffect(() => {
@@ -60,13 +63,18 @@ export default function GerenciamentoUsuarios() {
         setEmpresaSelecionada(empresaSelecionada);
     };
 
-    const handleFormChange = () => {
+    const handleCadastroEpresa = () => {
         setShowCadastroEmpresa(true);
         setShowTexto(false);
     };
 
+    const handleListaFuncionarios = () => {
+        setShowListaFuncionarios(true);
+        setShowTexto(false);
+    };
+
     if (loading) {
-        return <div>Carregando...</div>;
+        return <div><Loader /></div>;
     }
 
     if (error) {
@@ -81,8 +89,8 @@ export default function GerenciamentoUsuarios() {
                     <div> 
                         {showTexto && (
                             <div> 
-                                <h2>Selecione a empresa que deseja gerenciar:</h2>
-                                <select onChange={handleEmpresaChange}>
+                                <h2 className={styles['titulo']}>Selecione a empresa que deseja gerenciar:</h2>
+                                <select onChange={handleEmpresaChange} className={styles['seletor']}>
                                     <option value="">Selecione uma empresa</option>
                                     {empresa.map(empresa => (
                                         <option key={empresa.id} value={empresa.id}>{empresa.nomeFantasia}</option>
@@ -95,13 +103,23 @@ export default function GerenciamentoUsuarios() {
                             <div>
                                 {showCadastroEmpresa ? (
                                     <div>
-                                        <h2 className={styles['titulo']}>Preencha os dados abaixo para cadastrar uma nova empresa.</h2> 
+                                        <h2 className={styles['titulo']}>Cadastro de Novo Funcionário</h2> 
+                                        <h3 className={styles['subtitulo']}>Preencha os campos abaixo para adicionar um novo funcionário à empresa <strong>{empresaSelecionada.nomeFantasia}</strong>:</h3> 
                                         <CadastroEmpresa />
+                                    </div>
+                                ) : showListaFuncionarios ? (
+                                    <div>
+                                      <h2 className={styles['titulo']}>Lista de Funcionários - Empresa <strong>{empresaSelecionada.nomeFantasia}</strong>.</h2>
+                                      <GerenciamentoFuncionarios empresa={empresaSelecionada} />
                                     </div>
                                 ): (
                                     <div>
                                         <br/>
-                                        <h2>Gerenciamento de funcionários para a empresa <strong>{empresaSelecionada.nomeFantasia}</strong>.<br/> Caso queira cadastar uma nova empresa, <Link href="#" onClick={handleFormChange}><strong>clique aqui</strong></Link>.</h2>
+                                        <h2 className={styles['titulo']}>Gerenciamento de funcionários - Empresa <strong>{empresaSelecionada.nomeFantasia}</strong>.</h2>
+                                        <ul className={styles['lista']}>
+                                            <li className={styles['item']}>Para cadastrar uma nova empresa, <Link href="#" onClick={handleCadastroEpresa}><strong>clique aqui</strong></Link>.</li>
+                                            <li className={styles['item']}>Para acessar a lista de funcionários atuais, <Link href="#" onClick={handleListaFuncionarios}><strong>clique aqui</strong></Link>.</li>
+                                        </ul> 
                                         <CadastroFuncionario empresa={empresaSelecionada} />
                                     </div>
                                 )}         
@@ -112,12 +130,22 @@ export default function GerenciamentoUsuarios() {
                     <div> 
                         {showCadastroEmpresa ? (
                             <div>
-                                <h2 className={styles['titulo']}>Preencha os dados abaixo para cadastrar uma nova empresa.</h2> 
+                                <h2 className={styles['titulo']}>Cadastro de Novo Funcionário</h2> 
+                                <h3 className={styles['subtitulo']}>Preencha os campos abaixo para adicionar um novo funcionário à empresa <strong>{empresa.nomeFantasia}</strong>:</h3> 
                                 <CadastroEmpresa />
+                            </div>
+                         ) : showListaFuncionarios ? (
+                            <div>
+                              <h2 className={styles['titulo']}>Lista de Funcionários - Empresa <strong>{empresa.nomeFantasia}</strong>.</h2>
+                              <GerenciamentoFuncionarios empresa={empresa} />
                             </div>
                         ): (
                             <div>
-                                <h2 className={styles['titulo']}>Gerenciamento de funcionários para a empresa <strong>{empresa.nomeFantasia}</strong>.<br/> Caso queira cadastar uma nova empresa, <Link href="#" onClick={handleFormChange}><strong>clique aqui</strong></Link>.</h2> 
+                                <h2 className={styles['titulo']}>Gerenciamento de funcionários - Empresa <strong>{empresa.nomeFantasia}</strong></h2>
+                                <ul className={styles['lista']}>
+                                    <li className={styles['item']}>Para cadastrar uma nova empresa, <Link href="#" onClick={handleCadastroEpresa}><strong>clique aqui</strong></Link>.</li>
+                                    <li className={styles['item']}>Para acessar a lista de funcionários atuais, <Link href="#" onClick={handleListaFuncionarios}><strong>clique aqui</strong></Link>.</li>
+                                </ul> 
                                 <CadastroFuncionario empresa={empresa} />
                             </div>
                         )}            
@@ -126,7 +154,7 @@ export default function GerenciamentoUsuarios() {
             </div>
         ) : (
             <div>
-            <h2>Atualmente você não possui nenhuma empresa cadastrada, preencha os dados abaixo para realizar o cadastro.</h2>
+            <h2 className={styles['titulo']}>Atualmente você não possui nenhuma empresa cadastrada, preencha os dados abaixo para realizar o cadastro.</h2>
             <CadastroEmpresa />
             </div>
         )}
