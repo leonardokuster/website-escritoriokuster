@@ -1,5 +1,147 @@
+.section {
+    margin-bottom: 16px;
+    padding: 16px;
+    border: 1px solid var(--corhover);
+    border-radius: 8px;
+}
+
 .legenda {
-    text-align: left;
-    font-weight: 700;
-    padding: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.coluna {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.formField {
+    display: flex;
+    flex-direction: column;
+}
+
+.formField label {
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+.formField input,
+.formField select {
+    padding: 8px 0px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    text-indent: 5px;
+}
+
+.endereco {
+    display: flex;
+    gap: 16px;
+}
+
+.endereco .formField {
+    flex: 1;
+}
+
+.formFieldDependente {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: 30px;
+    width: 100%;
+}
+
+.buttonContainer {
+    display: flex;
+    gap: 16px; 
+    justify-content: flex-end; 
+    margin: 16px 0px;
+}
+
+.buttonContainer button {
+    padding: 10px 30px; 
+    font-size: 1rem;
+    border: none; 
+    border-radius: 4px; 
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease; 
+}
+
+.buttonContainer button[type="submit"] {
+    background-color: #007bff; 
+    color: #fff; 
+}
+
+.buttonContainer button[type="button"] {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.buttonContainer button:hover {
+    transform: translateY(-2px); 
+    background-color: darken(#007bff, 10%);
+}
+
+.buttonContainer button[type="button"]:hover {
+    background-color: darken(#6c757d, 10%);
+}
+
+.rua {
+    width: 60vw;
+}
+
+.botoes {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.botoes:hover {
+    background-color: #0056b3;
+}
+
+@media (min-width: 768px) {
+    .coluna {
+        flex-direction: row;
+        gap: 32px;
+    }
+
+    .coluna .formField {
+        flex: 1;
+    }
+
+    .formField input,
+    .formField select {
+        width: calc(100% - 16px);
+    }
+
+    .formFieldDependente {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        margin-top: 30px;
+        width: 100%;
+    }
+
+    .rua {
+        width: 30vw;
+    }
+
+    .botoes {
+        width: auto;
+        align-self: flex-start;
+    }
 }

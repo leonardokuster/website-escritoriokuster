@@ -41,7 +41,7 @@ export default function LoginForm() {
                 localStorage.setItem('nome', usuario.nome);
                 localStorage.setItem('tipo', usuario.tipo);
                 localStorage.setItem('usuario_id', usuario.id);
-                localStorage.setItem('empresa_id', usuario.empresa_id || '');
+                
 
                 console.log(`ID do usuário: ${usuario.id}`);
                 console.log(`ID da empresa: ${usuario.empresa_id || 'Nenhuma empresa associada'}`);

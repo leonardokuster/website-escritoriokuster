@@ -282,6 +282,7 @@ export default function CadastroFuncionario({cnpj}) {
                 const response = await axios.post(`http://localhost:3001/employees/${empresa_id}`, { ...values, empresa_id }, {
                     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                 });
+
                 setMessage(response.data.message);
                 resetForm();
             } catch (err) {
@@ -723,7 +724,7 @@ export default function CadastroFuncionario({cnpj}) {
                         />
                         {formik.values.qntDependente > 0 && (
                             [...Array(Number(formik.values.qntDependente)).keys()].map((index) => (
-                                <Box key={index}>
+                                <Box key={index} className={styles['formDependente']}>
                                     <TextField
                                         id={`nomeDependente${index}`}
                                         name={`dependentes[${index}].nomeDependente`}

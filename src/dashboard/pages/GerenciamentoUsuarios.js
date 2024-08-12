@@ -26,22 +26,23 @@ export default function GerenciamentoUsuarios() {
                 setLoading(false);
                 return;
             }
-
+    
             try {
                 const userResponse = await axios.get(`http://localhost:3001/users/${usuario_id}`);
                 if (userResponse.data && userResponse.data.cpf) {
                     setUsuario(userResponse.data);
+                    console.log("Usuário recebido: ", userResponse.data);
                 } else {
                     setUsuario(null);
                 }
-
+    
                 const empresaResponse = await axios.get(`http://localhost:3001/companies/${usuario_id}`);
                 if (empresaResponse.data && Array.isArray(empresaResponse.data)) {
                     setEmpresa(empresaResponse.data);
+                    console.log("Empresas recebidas: ", empresaResponse.data);
                 } else {
                     setEmpresa([]);
                 }
-                console.log("Empresas recebidas: ", empresaResponse.data);
             } catch (error) {
                 console.error('Erro ao verificar empresa do usuário:', error);
                 if (error.response && error.response.status === 404) {
@@ -53,25 +54,48 @@ export default function GerenciamentoUsuarios() {
                 setLoading(false);
             }
         };
-
+    
         verificarEmpresa();
-    }, []);
+    }, []);   
+
+    useEffect(() => {
+        const fetchFuncionarios = async () => {
+            if (usuario.empresa_id) {
+                try {
+                    const response = await axios.get(`http://localhost:3001/employees/${usuario.empresa_id}`);
+                } catch (error) {
+                    console.error('Erro ao buscar funcionários:', error);
+                }
+            }
+        };
+    
+        fetchFuncionarios();
+    }, [usuario.empresa_id]);
 
     const handleEmpresaChange = (event) => {
         const empresa_id = event.target.value;
-        const empresaSelecionada = empresa.find(e => e.id === empresa_id);
+        const empresaSelecionada = empresa.find(e => e.id.toString() === empresa_id);
+        console.log('Empresa selecionada:', empresaSelecionada);
+    
         setEmpresaSelecionada(empresaSelecionada);
-    };
-
-    const handleCadastroEpresa = () => {
+    
+        setUsuario(prevUsuario => ({
+            ...prevUsuario,
+            empresa_id: empresaSelecionada?.id
+        }));
+    };    
+    
+    const handleCadastroEmpresa = () => {
         setShowCadastroEmpresa(true);
         setShowTexto(false);
     };
 
     const handleListaFuncionarios = () => {
+        console.log('Empresa selecionada:', empresaSelecionada);
+        console.log(`ID da empresa: ${usuario.empresa_id || 'Nenhuma empresa associada'}`);
         setShowListaFuncionarios(true);
         setShowTexto(false);
-    };
+    };    
 
     if (loading) {
         return <div><Loader /></div>;
@@ -117,7 +141,7 @@ export default function GerenciamentoUsuarios() {
                                         <br/>
                                         <h2 className={styles['titulo']}>Gerenciamento de funcionários - Empresa <strong>{empresaSelecionada.nomeFantasia}</strong>.</h2>
                                         <ul className={styles['lista']}>
-                                            <li className={styles['item']}>Para cadastrar uma nova empresa, <Link href="#" onClick={handleCadastroEpresa}><strong>clique aqui</strong></Link>.</li>
+                                            <li className={styles['item']}>Para cadastrar uma nova empresa, <Link href="#" onClick={handleCadastroEmpresa}><strong>clique aqui</strong></Link>.</li>
                                             <li className={styles['item']}>Para acessar a lista de funcionários atuais, <Link href="#" onClick={handleListaFuncionarios}><strong>clique aqui</strong></Link>.</li>
                                         </ul> 
                                         <CadastroFuncionario empresa={empresaSelecionada} />
@@ -137,16 +161,16 @@ export default function GerenciamentoUsuarios() {
                          ) : showListaFuncionarios ? (
                             <div>
                               <h2 className={styles['titulo']}>Lista de Funcionários - Empresa <strong>{empresa.nomeFantasia}</strong>.</h2>
-                              <GerenciamentoFuncionarios empresa={empresa} />
+                              <GerenciamentoFuncionarios empresa={empresa[0]} />
                             </div>
                         ): (
                             <div>
                                 <h2 className={styles['titulo']}>Gerenciamento de funcionários - Empresa <strong>{empresa.nomeFantasia}</strong></h2>
                                 <ul className={styles['lista']}>
-                                    <li className={styles['item']}>Para cadastrar uma nova empresa, <Link href="#" onClick={handleCadastroEpresa}><strong>clique aqui</strong></Link>.</li>
+                                    <li className={styles['item']}>Para cadastrar uma nova empresa, <Link href="#" onClick={handleCadastroEmpresa}><strong>clique aqui</strong></Link>.</li>
                                     <li className={styles['item']}>Para acessar a lista de funcionários atuais, <Link href="#" onClick={handleListaFuncionarios}><strong>clique aqui</strong></Link>.</li>
                                 </ul> 
-                                <CadastroFuncionario empresa={empresa} />
+                                <CadastroFuncionario empresa={empresa[0]} />
                             </div>
                         )}            
                     </div>    

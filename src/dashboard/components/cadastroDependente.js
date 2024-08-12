@@ -4,7 +4,7 @@ import * as yup from 'yup';
 import axios from 'axios';
 import { TextField, Button, Box } from '@mui/material';
 import InputMask from 'react-input-mask';
-import styles from '../styles/cadastroFuncionario.module.css';
+import styles from '../styles/cadastroDependente.module.css';
 
 const MaskedTextField = ({ mask, value, onChange, onBlur, ...props }) => (
     <InputMask mask={mask} value={value} onChange={onChange} onBlur={onBlur}>
@@ -57,7 +57,7 @@ export default function CadastroDependente({ cpf }) {
             }
 
             try {
-                const response = await axios.post(`http://localhost:3001/employees/${empresa_id}`, { ...values, empresa_id }, {
+                const response = await axios.post(`http://localhost:3001/relatives/${empresa_id}`, { ...values, empresa_id }, {
                     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                 });
                 setMessage(response.data.message);
@@ -78,64 +78,69 @@ export default function CadastroDependente({ cpf }) {
     return (
         <div>
             <form onSubmit={formik.handleSubmit}>
-                <Box className={styles['formulario']}>
-                    {formik.values.dependentes.map((_, index) => (
-                        <Box key={index}>
-                            <TextField
-                                id={`nomeDependente${index}`}
-                                name={`dependentes[${index}].nomeDependente`}
-                                label={`Nome do ${index + 1}º dependente`}
-                                variant="standard"
-                                value={formik.values.dependentes[index]?.nomeDependente || ''}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                error={formik.touched.dependentes && formik.touched.dependentes[index]?.nomeDependente && Boolean(formik.errors.dependentes?.[index]?.nomeDependente)}
-                                helperText={formik.touched.dependentes && formik.touched.dependentes[index]?.nomeDependente && formik.errors.dependentes?.[index]?.nomeDependente}
-                                style={{ marginTop: '10px' }}
-                            />
-                            <TextField
-                                id={`dataNascimentoDependente${index}`}
-                                name={`dependentes[${index}].dataNascimentoDependente`}
-                                label="Data nascimento*"
-                                InputLabelProps={{ shrink: true }}
-                                type="date"
-                                value={formik.values.dependentes[index]?.dataNascimentoDependente || ''}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                error={formik.touched.dependentes && formik.touched.dependentes[index]?.dataNascimentoDependente && Boolean(formik.errors.dependentes?.[index]?.dataNascimentoDependente)}
-                                helperText={formik.touched.dependentes && formik.touched.dependentes[index]?.dataNascimentoDependente && formik.errors.dependentes?.[index]?.dataNascimentoDependente}
-                                style={{ marginTop: '10px' }}
-                            />
-                            <MaskedTextField
-                                mask="999.999.999-99"
-                                id={`cpfDependente${index}`}
-                                name={`dependentes[${index}].cpfDependente`}
-                                label="CPF*"
-                                variant="standard"
-                                value={formik.values.dependentes[index]?.cpfDependente || ''}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                error={formik.touched.dependentes && formik.touched.dependentes[index]?.cpfDependente && Boolean(formik.errors.dependentes?.[index]?.cpfDependente)}
-                                helperText={formik.touched.dependentes && formik.touched.dependentes[index]?.cpfDependente && formik.errors.dependentes?.[index]?.cpfDependente}
-                                style={{ marginTop: '10px' }}
-                            />
-                            <TextField
-                                id={`localNascimentoDependente${index}`}
-                                name={`dependentes[${index}].localNascimentoDependente`}
-                                label="Local de nascimento*"
-                                variant="standard"
-                                value={formik.values.dependentes?.[index]?.localNascimentoDependente || ''}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                error={formik.touched.dependentes && formik.touched.dependentes?.[index]?.localNascimentoDependente && Boolean(formik.errors.dependentes?.[index]?.localNascimentoDependente)}
-                                helperText={formik.touched.dependentes && formik.touched.dependentes?.[index]?.localNascimentoDependente && formik.errors.dependentes?.[index]?.localNascimentoDependente}
-                                style={{ marginTop: '10px' }}
-                            />
-                        </Box>
-                    ))}
-                    <Box className={styles['botoes']}>
-                        <Button type="submit">Adicionar</Button>
-                    </Box>
+                <Box>
+                    <div className={styles['container']}>
+                        {formik.values.dependentes.map((_, index) => (
+                            <Box key={index} className={styles['formulario']}>
+                                <div className={styles['formField']}>
+                                    <TextField
+                                        id={`nomeDependente${index}`}
+                                        name={`dependentes[${index}].nomeDependente`}
+                                        label={`Nome do dependente*`}
+                                        variant="standard"
+                                        value={formik.values.dependentes[index]?.nomeDependente || ''}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.dependentes && formik.touched.dependentes[index]?.nomeDependente && Boolean(formik.errors.dependentes?.[index]?.nomeDependente)}
+                                        helperText={formik.touched.dependentes && formik.touched.dependentes[index]?.nomeDependente && formik.errors.dependentes?.[index]?.nomeDependente}
+                                    />
+                                </div>
+                                <div className={styles['formField']}>
+                                    <TextField
+                                        id={`dataNascimentoDependente${index}`}
+                                        name={`dependentes[${index}].dataNascimentoDependente`}
+                                        label="Data nascimento*"
+                                        InputLabelProps={{ shrink: true }}
+                                        type="date"
+                                        value={formik.values.dependentes[index]?.dataNascimentoDependente || ''}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.dependentes && formik.touched.dependentes[index]?.dataNascimentoDependente && Boolean(formik.errors.dependentes?.[index]?.dataNascimentoDependente)}
+                                        helperText={formik.touched.dependentes && formik.touched.dependentes[index]?.dataNascimentoDependente && formik.errors.dependentes?.[index]?.dataNascimentoDependente}
+                                    />
+                                </div>
+                                <div className={styles['formField']}>
+                                    <MaskedTextField
+                                        mask="999.999.999-99"
+                                        id={`cpfDependente${index}`}
+                                        name={`dependentes[${index}].cpfDependente`}
+                                        label="CPF*"
+                                        variant="standard"
+                                        value={formik.values.dependentes[index]?.cpfDependente || ''}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.dependentes && formik.touched.dependentes[index]?.cpfDependente && Boolean(formik.errors.dependentes?.[index]?.cpfDependente)}
+                                        helperText={formik.touched.dependentes && formik.touched.dependentes[index]?.cpfDependente && formik.errors.dependentes?.[index]?.cpfDependente}
+                                    />
+                                </div>
+                                <div className={styles['formField']}>
+                                    <TextField
+                                        id={`localNascimentoDependente${index}`}
+                                        name={`dependentes[${index}].localNascimentoDependente`}
+                                        label="Local de nascimento*"
+                                        variant="standard"
+                                        value={formik.values.dependentes?.[index]?.localNascimentoDependente || ''}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        error={formik.touched.dependentes && formik.touched.dependentes?.[index]?.localNascimentoDependente && Boolean(formik.errors.dependentes?.[index]?.localNascimentoDependente)}
+                                        helperText={formik.touched.dependentes && formik.touched.dependentes?.[index]?.localNascimentoDependente && formik.errors.dependentes?.[index]?.localNascimentoDependente}
+                                    />
+                                </div>
+                            </Box>
+                        ))}
+                        <Button type="submit" className={styles['botoes']}>Adicionar</Button>
+                    </div>
+                    <h5 className={styles['obrigatorios']}>* Campos obrigatórios</h5>
                 </Box>
                 {message && (
                     <h3 style={{ fontSize: '0.84em', color: '#202949', textAlign: 'left' }}>
