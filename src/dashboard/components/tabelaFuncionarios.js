@@ -43,10 +43,8 @@ export default function GerenciamentoFuncionarios({ empresa_id }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const buscarFuncionarios = async () => {
-        const empresa_id = localStorage.getItem('empresa_id');
-
+    useEffect(() => {
+        const buscarFuncionarios = async () => {
         try {
             const response = await axios.get(`http://localhost:3001/employees/${empresa_id}`);
             setFuncionarios(response.data);
@@ -57,7 +55,9 @@ export default function GerenciamentoFuncionarios({ empresa_id }) {
         }
         };
 
+        if (empresa_id) {
         buscarFuncionarios();
+        }
     }, [empresa_id]);
 
     const handleRevisarClick = (funcionario) => {
@@ -86,17 +86,21 @@ export default function GerenciamentoFuncionarios({ empresa_id }) {
         return <div>{error}</div>;
     }
 
+    if (!funcionarios || Object.keys(funcionarios).length === 0) { 
+        return <div>Nenhum funcionário cadastrado</div>;
+      }
+
     return (
         <Box>
-        {funcionarioSelecionado ? (
-            <FormularioEdicaoFuncionario
-            funcionario={funcionarioSelecionado}
-            onCancelar={handleCancelarEdicao}
-            onSalvar={handleSalvarEdicao}
-            />
-        ) : (
-            <TabelaFuncionarios funcionarios={funcionarios} onRevisarClick={handleRevisarClick} />
-        )}
+            {funcionarioSelecionado ? (
+                <FormularioEdicaoFuncionario
+                funcionario={funcionarioSelecionado}
+                onCancelar={handleCancelarEdicao}
+                onSalvar={handleSalvarEdicao}
+                />
+            ) : (
+                <TabelaFuncionarios funcionarios={Object.values(funcionarios)} onRevisarClick={handleRevisarClick} />
+            )}
         </Box>
     );
 }

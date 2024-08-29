@@ -7,8 +7,6 @@ import styles from '../styles/screens/home.module.css';
 import Skeleton from '@mui/material/Skeleton';
 import Image from 'next/image';
 
-const LazyImage = React.lazy(() => import('next/image'));
-
 export default function Home() {
 
     const homeData = {
@@ -81,8 +79,8 @@ export default function Home() {
             <div className={styles['section']} style={{ justifyContent: 'space-around' }}>
                 <div>
                     <Suspense fallback={<Skeleton animation="wave" variant="rounded" width={331} height={353} />}>
-                        <LazyImage src="/images/img-gestao.webp" alt="Imagem de lupa analisando tabelas. Calculadora, óculos e caneta se encontram em volta" className="desktop-image" width={436} height={366} loading="lazy"/>
-                        <LazyImage src="/images/img-gestao-tablet.webp" alt="Uma família em volta de calculadora, dinheiro e ações subindo" className="tablet-image" width={331} height={353} loading="lazy"/>
+                        <Image src="/images/img-gestao.webp" alt="Imagem de lupa analisando tabelas. Calculadora, óculos e caneta se encontram em volta" className="desktop-image" width={436} height={366}/>
+                        <Image src="/images/img-gestao-tablet.webp" alt="Uma família em volta de calculadora, dinheiro e ações subindo" className="tablet-image" width={331} height={353}/>
                     </Suspense>
                 </div>
                 <div className={styles['formulario']}>

@@ -20,7 +20,7 @@ const validationSchema = [
     yup.object({
         nome: yup
             .string('Nome completo')
-            .matches(/^[a-zA-Z\s]+$/, 'Nome inválido, por favor tente outro')
+            .matches(/^[a-zA-Zà-úÀ-Ú\s]+$/, 'Nome inválido, por favor tente outro')
             .required('Campo obrigatório'),
         email: yup
             .string('E-mail')
@@ -99,8 +99,7 @@ const validationSchema = [
             .notRequired(),
         qntDependente: yup
             .number()
-            .min(0, 'Quantidade de dependentes deve ser maior ou igual a 0')
-            .required('Quantidade de dependentes é obrigatória'),
+            .min(0, 'Quantidade de dependentes deve ser maior ou igual a 0'),
         dependentes: yup.array().of(
             yup.object().shape({
                 nomeDependente: yup
@@ -278,6 +277,8 @@ export default function CadastroFuncionario({cnpj}) {
             try {
                 await validationSchema[step].validate(values);
                 console.log('Validação bem-sucedida');
+                console.log('Valores enviados:', values);
+                console.log('Empresa try:', empresa_id);
 
                 const response = await axios.post(`http://localhost:3001/employees/${empresa_id}`, { ...values, empresa_id }, {
                     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -720,7 +721,6 @@ export default function CadastroFuncionario({cnpj}) {
                             onBlur={formik.handleBlur}
                             error={formik.touched.qntDependente && Boolean(formik.errors.qntDependente)}
                             helperText={formik.touched.qntDependente && formik.errors.qntDependente}
-                            style={{ width: '20%' }}
                         />
                         {formik.values.qntDependente > 0 && (
                             [...Array(Number(formik.values.qntDependente)).keys()].map((index) => (
@@ -777,7 +777,7 @@ export default function CadastroFuncionario({cnpj}) {
                                     />
                                 </Box>
                             ))
-                        )};
+                        )}
                         <Box className={styles['botoes']}>
                             <Button onClick={handleBack}>Voltar</Button>
                             <Button onClick={handleNext}style={{alignItems: 'right', marginBottom: '15px'}}>Próximo</Button>
@@ -922,7 +922,7 @@ export default function CadastroFuncionario({cnpj}) {
                             <Button onClick={handleNext} style={{ alignItems: 'right', marginBottom: '15px' }}>Próximo</Button>
                         </Box>
                     </Box>
-                )};
+                )}
                 {step === 4 && (
                     <Box className={styles['formulario']}>
                         <TextField
