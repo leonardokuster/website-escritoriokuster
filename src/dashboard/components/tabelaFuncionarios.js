@@ -45,20 +45,21 @@ export default function GerenciamentoFuncionarios({ empresa_id }) {
 
     useEffect(() => {
         const buscarFuncionarios = async () => {
-        try {
-            const response = await axios.get(`http://localhost:3001/employees/${empresa_id}`);
-            setFuncionarios(response.data);
-        } catch (error) {
-            setError(error.response?.data?.message || 'Erro ao buscar funcionários');
-        } finally {
-            setLoading(false);
-        }
+            const empresa_id = localStorage.getItem('empresa_id');
+
+            try {
+                const response = await axios.get(`http://localhost:3001/employees/${empresa_id}`);
+                setFuncionarios(response.data);
+            } catch (error) {
+                setError(error.response?.data?.message || 'Erro ao buscar funcionários');
+            } finally {
+                setLoading(false);
+            }
         };
 
-        if (empresa_id) {
         buscarFuncionarios();
-        }
     }, [empresa_id]);
+
 
     const handleRevisarClick = (funcionario) => {
         setFuncionarioSelecionado(funcionario);
@@ -70,25 +71,21 @@ export default function GerenciamentoFuncionarios({ empresa_id }) {
 
     const handleSalvarEdicao = async (funcionarioEditado) => {
         try {
-        const response = await axios.put(`http://localhost:3001/employees/${empresa_id}`, funcionarioEditado);
-        setFuncionarios((prev) => prev.map(f => (f.id === response.data.id ? response.data : f)));
-        setFuncionarioSelecionado(null);
+            const response = await axios.put(`http://localhost:3001/employees/${empresa_id}`, funcionarioEditado);
+            setFuncionarios((prev) => prev.map(f => (f.id === response.data.id ? response.data : f)));
+            setFuncionarioSelecionado(null);
         } catch (error) {
-        console.error('Erro ao salvar edição do funcionário:', error.message);
+            console.error('Erro ao salvar edição do funcionário:', error.message);
         }
     };
 
     if (loading) {
-        return <div><Loader /></div>;
+        return <div><Loader/></div>;
     }
 
     if (error) {
         return <div>{error}</div>;
     }
-
-    if (!funcionarios || Object.keys(funcionarios).length === 0) { 
-        return <div>Nenhum funcionário cadastrado</div>;
-      }
 
     return (
         <Box>
@@ -99,7 +96,7 @@ export default function GerenciamentoFuncionarios({ empresa_id }) {
                 onSalvar={handleSalvarEdicao}
                 />
             ) : (
-                <TabelaFuncionarios funcionarios={Object.values(funcionarios)} onRevisarClick={handleRevisarClick} />
+                <TabelaFuncionarios funcionarios={funcionarios} onRevisarClick={handleRevisarClick} />
             )}
         </Box>
     );

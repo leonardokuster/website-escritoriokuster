@@ -8,7 +8,7 @@ import NotFound from '../screens/notFound';
 
 export default function Main({ currentPage }) {
   return (
-    <main>
+    <main style={{ minHeight: '72vh' }}>
         {currentPage === 'home' && <Home />}
         {currentPage === 'clients' && <Clients />}
         {currentPage === 'contact' && <Contact />}
