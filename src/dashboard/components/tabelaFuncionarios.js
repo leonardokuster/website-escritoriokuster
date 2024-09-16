@@ -175,27 +175,6 @@ const FormularioEdicaoFuncionario = ({ funcionario, onCancelar, onSalvar }) => {
             console.error('Erro ao buscar endereço:', error);
         }
     };
-
-    const adicionarDependente = () => {
-        const novoDependente = {
-            id: Date.now(),
-            nomeDependente: '',
-            nascimentoDependente: '',
-            cpfDependente: '',
-            localNascimentoDependente: '',
-        };
-        setDependentes((prev) => [...prev, novoDependente]);
-    };
-
-    const removerDependente = (id) => {
-        setDependentes((prev) => prev.filter((dep) => dep.id !== id));
-    };
-
-    const handleDependenteChange = (id, field, value) => {
-        setDependentes((prev) =>
-            prev.map((dep) => (dep.id === id ? { ...dep, [field]: value } : dep))
-        );
-    };
     
     return (
         <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -281,15 +260,6 @@ const FormularioEdicaoFuncionario = ({ funcionario, onCancelar, onSalvar }) => {
                             type="text"
                             name="localNascimento"
                             value={formData.localNascimento}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <div className={styles['formField']}>
-                        <label>Nacionalidade:</label>
-                        <input
-                            type="text"
-                            name="nacionalidade"
-                            value={formData.nacionalidade}
                             onChange={handleChange}
                         />
                     </div>
@@ -475,8 +445,8 @@ const FormularioEdicaoFuncionario = ({ funcionario, onCancelar, onSalvar }) => {
                     </div>
                 </div>
                 <div className={styles['formFieldDependente']}>
-                    <p>Tabela Dependentes</p>
-                    <TabelaDependentes/>
+                    <h2>Lista de Dependentes</h2>
+                    <TabelaDependentes funcionario_id={formData.id} />
                 </div>
             </fieldset>
             <fieldset className={styles['section']}>
@@ -691,7 +661,6 @@ FormularioEdicaoFuncionario.propTypes = {
     corEtnia: PropTypes.string.isRequired,
     dataNascimento: PropTypes.string.isRequired,
     localNascimento: PropTypes.string.isRequired,
-    nacionalidade: PropTypes.string.isRequired,
     cpf: PropTypes.string.isRequired,
     rg: PropTypes.string.isRequired,
     orgaoExpedidor: PropTypes.string.isRequired,

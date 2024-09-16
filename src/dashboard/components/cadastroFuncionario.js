@@ -8,7 +8,10 @@ import { motion } from "framer-motion";
 import InputMask from 'react-input-mask';
 import PhoneInput from '../../components/form/PhoneInput';
 import CurrencyInput from '../../components/form/CurrencyInput';
-import moment from 'moment';
+import TabelaDependentes from './tabelaDependentes';
+import { Switch } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 
 const MaskedTextField = ({ mask, value, onChange, onBlur, ...props }) => (
     <InputMask mask={mask} value={value} onChange={onChange} onBlur={onBlur}>
@@ -16,6 +19,15 @@ const MaskedTextField = ({ mask, value, onChange, onBlur, ...props }) => (
     </InputMask>
 );
 
+const theme = createTheme({
+    breakpoints: {
+      values: {
+        mobile: 0,
+        tablet: 768,
+      },
+    },
+});
+  
 const validationSchema = [
     yup.object({
         nome: yup
@@ -43,9 +55,6 @@ const validationSchema = [
         localNascimento: yup
             .string('Local do nascimento')
             .required('Campo obrigatório'),
-        nacionalidade: yup
-            .string('Nacionalidade')
-            .required('Campo obrigatório'),
         cpf: yup
             .string('CPF')
             .matches(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/, 'CPF inválido')
@@ -60,8 +69,6 @@ const validationSchema = [
             .date()
             .typeError('Data inválida')
             .notRequired(),
-    }),
-    yup.object({
         cep: yup
             .string('CEP')
             .required('Campo obrigatório'),
@@ -97,42 +104,6 @@ const validationSchema = [
         nomeConjuge: yup
             .string('Nome cônjuge')
             .notRequired(),
-        qntDependente: yup
-            .number()
-            .min(0, 'Quantidade de dependentes deve ser maior ou igual a 0'),
-        dependentes: yup.array().of(
-            yup.object().shape({
-                nomeDependente: yup
-                    .string()
-                    .when('qntDependente', {
-                        is: (qntDependente) => qntDependente > 0,
-                        then: () => yup.string().required('Nome do dependente é obrigatório'),
-                        otherwise: () => yup.string().notRequired(),
-                    }),
-                dataNascimentoDependente: yup
-                    .date()
-                    .typeError('Data inválida')
-                    .when('qntDependente', {
-                        is: (qntDependente) => qntDependente > 0,
-                        then: () => yup.date().required('Data de nascimento é obrigatória'),
-                        otherwise: () => yup.date().notRequired(),
-                    }),
-                cpfDependente: yup
-                    .string()
-                    .when('qntDependente', {
-                        is: (qntDependente) => qntDependente > 0,
-                        then: () => yup.string().required('CPF do dependente é obrigatório'),
-                        otherwise: () => yup.string().notRequired(),
-                    }),
-                localNascimentoDependente: yup
-                    .string()
-                    .when('qntDependente', {
-                        is: (qntDependente) => qntDependente > 0,
-                        then: () => yup.string().required('Local de nascimento é obrigatório'),
-                        otherwise: () => yup.string().notRequired(),
-                    }),
-            })
-        ),
     }),
     yup.object({
         escolaridade: yup
@@ -196,6 +167,11 @@ const validationSchema = [
         quantidadeVales: yup
             .number('Quantidade vales')
             .notRequired(),
+    }),
+    yup.object({ 
+        possuiDependente: yup
+            .boolean('Possui dependente?')
+            .notRequired(),
     })
 ];
 
@@ -206,6 +182,8 @@ export default function CadastroFuncionario({cnpj}) {
     const [cidade, setCidade] = useState('');
     const [estado, setEstado] = useState('');
     const [message, setMessage] = useState('');
+    const [funcionarioId, setFuncionarioId] = useState(null);
+    const [cadastroConcluido, setCadastroConcluido] = useState(false);
        
     const formik = useFormik({
         initialValues: {
@@ -216,7 +194,6 @@ export default function CadastroFuncionario({cnpj}) {
             corEtnia: '',
             dataNascimento: '',
             localNascimento: '',
-            nacionalidade: 'Brasileiro(a)',
             cpf: '',
             rg: '',
             orgaoExpedidor: '',
@@ -241,7 +218,6 @@ export default function CadastroFuncionario({cnpj}) {
             tituloEleitoral: '',
             zona: '',
             secao: '',
-            qntDependente: 0,
             dependentes: [{ 
                 nomeDependente: '', 
                 dataNascimentoDependente: '', 
@@ -257,7 +233,7 @@ export default function CadastroFuncionario({cnpj}) {
             periculosidade: false,
             quebraDeCaixa: false,
             valeTransporte: false,
-            quantidadeVales: '',
+            quantidadeVales: 0,
         },
         validationSchema: validationSchema[step],
         validateOnChange: false,  
@@ -266,30 +242,31 @@ export default function CadastroFuncionario({cnpj}) {
             const token = localStorage.getItem('token');
             const empresa_id = localStorage.getItem('empresa_id');
 
-            console.log('Empresa ID:', empresa_id);
-            console.log('Valores enviados:', values);
-
             if (!empresa_id) {
                 setMessage('Empresa ID não encontrado');
                 return;
             }
 
             try {
-                await validationSchema[step].validate(values);
-                console.log('Validação bem-sucedida');
                 console.log('Valores enviados:', values);
-                console.log('Empresa try:', empresa_id);
 
                 const response = await axios.post(`http://localhost:3001/employees/${empresa_id}`, { ...values, empresa_id }, {
                     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                 });
 
-                setMessage(response.data.message);
-                resetForm();
+                console.log('Resposta da API:', response.data);
+
+                if (response.data.success) {
+                    setFuncionarioId(response.data.newEmployee.id);
+
+                    setStep(4);
+
+                    resetForm();
+                }
             } catch (err) {
                 console.error('Erro:', err);
                 if (err.response) {
-                    setMessage('Erro ao cadastrar funcionário: ' + err.response.data.message);
+                    setMessage('Funcionário já cadastrado');
                     setErrorDetails(JSON.stringify(err.response.data));
                 } else if (err instanceof yup.ValidationError) {
                     setMessage('Erro de validação: ' + err.errors.join(', '));
@@ -302,7 +279,19 @@ export default function CadastroFuncionario({cnpj}) {
         },
     });
 
-    const steps = ['Informações Pessoais', 'Endereço', 'Informações Familiares', 'Escolaridade e Documentos', 'Informações Profissionais'];
+    const botaoFinalizarFuncionario = () => {
+        formik.handleSubmit(); 
+        setCadastroConcluido(false); 
+    };
+
+    const botaoFinalizarCadastro = () => {
+        setStep(0);  
+        formik.resetForm(); 
+        setFuncionarioId(null);  
+        setCadastroConcluido(true); 
+    };   
+
+    const steps = ['Informações Pessoais', 'Informações Familiares', 'Escolaridade e Documentos', 'Informações Profissionais', 'Dependentes'];
 
     const handleNext = () => {
         formik.validateForm().then((errors) => {
@@ -344,91 +333,94 @@ export default function CadastroFuncionario({cnpj}) {
     };
     
     return (
+    <ThemeProvider theme={theme}>
         <motion.div
-            className={styles['cadastroform']}
             initial={{ opacity: 0, x: -100 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
         >
             <h2 style={{ marginBottom: '20px' }}>Preencha os dados abaixo para cadastrar um novo funcionário</h2>
-            <Stepper activeStep={step} className={styles['steps']}>
+            <Stepper activeStep={step} className={styles['steps']} alternativeLabel>
                 {steps.map((label) => (
                     <Step key={label}>
                         <StepLabel>{label}</StepLabel>
                     </Step>
                 ))}
             </Stepper>
-
             <form onSubmit={formik.handleSubmit}>
                 {step === 0 && (
                     <Box className={styles['formulario']}>
-                        <TextField
-                            id="nome"
-                            name="nome"
-                            label="Nome Completo*"
-                            autoComplete="fullname"
-                            variant="standard"
-                            value={formik.values.nome}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.nome && Boolean(formik.errors.nome)}
-                            helperText={formik.touched.nome && formik.errors.nome}
-                            style={{ marginTop: '10px' }}
-                        />
-                        <TextField
-                            id="email"
-                            name="email"
-                            label="E-mail*"
-                            autoComplete="email"
-                            variant="standard"
-                            value={formik.values.email}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.email && Boolean(formik.errors.email)}
-                            helperText={formik.touched.email && formik.errors.email}
-                        />
-                        <PhoneInput
-                            id="telefone"
-                            name="telefone"
-                            label="Telefone*"
-                            value={formik.values.telefone}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            onFocus={formik.handleFocus}
-                            error={formik.touched.telefone && Boolean(formik.errors.telefone)}
-                            helperText={formik.touched.telefone && formik.errors.telefone}
-                        />
-                        <FormControl
-                            variant="standard"
-                            error={formik.touched.sexo && Boolean(formik.errors.sexo)}
-                            fullWidth
-                            style={{textAlign: 'left'}}
-                        >
-                            <InputLabel id="sexo-label">Sexo*</InputLabel>
-                            <Select
-                                labelId="sexo-label"
-                                id="sexo"
-                                name="sexo"
-                                value={formik.values.sexo}
+                        <div className={styles['conjunto']}>
+                            <TextField
+                                id="nome"
+                                name="nome"
+                                label="Nome Completo*"
+                                autoComplete="fullname"
+                                variant="standard"
+                                value={formik.values.nome}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
+                                error={formik.touched.nome && Boolean(formik.errors.nome)}
+                                helperText={formik.touched.nome && formik.errors.nome}
+                                sx ={{ width: { mobile: '100%', tablet: '80%' } }}
+                            />
+                            <FormControl
+                                variant="standard"
+                                error={formik.touched.sexo && Boolean(formik.errors.sexo)}
+                                sx ={{textAlign: 'left', width: { mobile: '100%', tablet: '20%' }}}
                             >
-                                <MenuItem value="">
-                                    <em>Selecione</em>
-                                </MenuItem>
-                                <MenuItem value="masculino">Masculino</MenuItem>
-                                <MenuItem value="feminino">Feminino</MenuItem>
-                                <MenuItem value="prefiroNaoInformar">Prefiro não informar</MenuItem>
-                            </Select>
-                            {formik.touched.sexo && formik.errors.sexo && (
-                                <FormHelperText>{formik.errors.sexo}</FormHelperText>
-                            )}
-                        </FormControl>
+                                <InputLabel id="sexo-label">Sexo*</InputLabel>
+                                <Select
+                                    labelId="sexo-label"
+                                    id="sexo"
+                                    name="sexo"
+                                    value={formik.values.sexo}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                >
+                                    <MenuItem value="">
+                                        <em>Selecione</em>
+                                    </MenuItem>
+                                    <MenuItem value="masculino">Masculino</MenuItem>
+                                    <MenuItem value="feminino">Feminino</MenuItem>
+                                    <MenuItem value="prefiroNaoInformar">Prefiro não informar</MenuItem>
+                                </Select>
+                                {formik.touched.sexo && formik.errors.sexo && (
+                                    <FormHelperText>{formik.errors.sexo}</FormHelperText>
+                                )}
+                            </FormControl>
+                        </div>
+                        <div className={styles['conjunto']}>
+                            <TextField
+                                id="email"
+                                name="email"
+                                label="E-mail*"
+                                autoComplete="email"
+                                variant="standard"
+                                value={formik.values.email}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.email && Boolean(formik.errors.email)}
+                                helperText={formik.touched.email && formik.errors.email}
+                                sx ={{ width: { mobile: '100%', tablet: '70%' } }}
+                            />
+                            <PhoneInput
+                                id="telefone"
+                                name="telefone"
+                                label="Telefone*"
+                                value={formik.values.telefone}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                onFocus={formik.handleFocus}
+                                error={formik.touched.telefone && Boolean(formik.errors.telefone)}
+                                helperText={formik.touched.telefone && formik.errors.telefone}
+                            />
+                        </div>
                         <FormControl
                             variant="standard"
                             error={formik.touched.corEtnia && Boolean(formik.errors.corEtnia)}
                             fullWidth
-                            style={{textAlign: 'left'}}
+                            sx={{textAlign: 'left', width: '100%'}}
                         >
                             <InputLabel id="corEtnia-label">Cor/Etnia*</InputLabel>
                             <Select
@@ -452,42 +444,32 @@ export default function CadastroFuncionario({cnpj}) {
                                 <FormHelperText>{formik.errors.corEtnia}</FormHelperText>
                             )}
                         </FormControl>
-                        <TextField
-                            id="dataNascimento"
-                            name="dataNascimento"
-                            label="Data de Nascimento"
-                            type="date"
-                            InputLabelProps={{ shrink: true }}
-                            value={formik.values.dataNascimento}
-                            onChange={formik.handleChange}
-                            error={formik.touched.dataNascimento && Boolean(formik.errors.dataNascimento)}
-                            helperText={formik.touched.dataNascimento && formik.errors.dataNascimento}
-                            style={{ marginTop: '10px' }}
-                        />
-                        <TextField
-                            id="localNascimento"
-                            name="localNascimento"
-                            label="Local nascimento*"
-                            variant="standard"
-                            value={formik.values.localNascimento}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.localNascimento && Boolean(formik.errors.localNascimento)}
-                            helperText={formik.touched.localNascimento && formik.errors.localNascimento}
-                            style={{ marginTop: '10px' }}
-                        />
-                        <TextField
-                            id="nacionalidade"
-                            name="nacionalidade"
-                            label="Nacionalidade*"
-                            variant="standard"
-                            value={formik.values.nacionalidade}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.nacionalidade && Boolean(formik.errors.nacionalidade)}
-                            helperText={formik.touched.nacionalidade && formik.errors.nacionalidade}
-                            style={{ marginTop: '10px' }}
-                        />
+                        <div className={styles['conjunto']}>
+                            <TextField
+                                id="localNascimento"
+                                name="localNascimento"
+                                label="Local nascimento*"
+                                variant="standard"
+                                value={formik.values.localNascimento}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.localNascimento && Boolean(formik.errors.localNascimento)}
+                                helperText={formik.touched.localNascimento && formik.errors.localNascimento}
+                                sx ={{ marginTop: '10px', width: { mobile: '100%', tablet: '80%' } }}
+                            />
+                            <TextField
+                                id="dataNascimento"
+                                name="dataNascimento"
+                                label="Data de Nascimento*"
+                                type="date"
+                                InputLabelProps={{ shrink: true }}
+                                value={formik.values.dataNascimento}
+                                onChange={formik.handleChange}
+                                error={formik.touched.dataNascimento && Boolean(formik.errors.dataNascimento)}
+                                helperText={formik.touched.dataNascimento && formik.errors.dataNascimento}
+                                sx ={{ width: { mobile: '100%', tablet: '30%' }, mt: { mobile: 3, tablet: 0} }}
+                            />
+                        </div>
                         <MaskedTextField
                             mask="999.999.999-99"
                             id="cpf"
@@ -498,21 +480,37 @@ export default function CadastroFuncionario({cnpj}) {
                             onBlur={formik.handleBlur}
                             error={formik.touched.cpf && Boolean(formik.errors.cpf)}
                             helperText={formik.touched.cpf && formik.errors.cpf}
+                            sx = {{ width: '100%' }}
                         />
-                        <TextField
-                            id="rg"
-                            name="rg"
-                            label="RG"
-                            value={formik.values.rg}
-                            onChange={formik.handleChange}
-                            error={formik.touched.rg && Boolean(formik.errors.rg)}
-                            helperText={formik.touched.rg && formik.errors.rg}
-                        />
+                        <div className={styles['conjunto']}>
+                            <TextField
+                                id="rg"
+                                name="rg"
+                                label="RG"
+                                value={formik.values.rg}
+                                onChange={formik.handleChange}
+                                error={formik.touched.rg && Boolean(formik.errors.rg)}
+                                helperText={formik.touched.rg && formik.errors.rg}
+                                sx ={{ width: { mobile: '100%', tablet: '70%' } }}
+                            />
+                            <TextField
+                                id="dataRg"
+                                name="dataRg"
+                                label="Data de expedição"
+                                type="date"
+                                InputLabelProps={{ shrink: true }}
+                                value={formik.values.dataRg}
+                                onChange={formik.handleChange}
+                                error={formik.touched.dataRg && Boolean(formik.errors.dataRg)}
+                                helperText={formik.touched.dataRg && formik.errors.dataRg}
+                                sx ={{ width: { mobile: '100%', tablet: '30%' }, mt: { mobile: 3, tablet: 0} }}
+                            />
+                        </div>
                         <FormControl
                             variant="standard"
                             error={formik.touched.orgaoExpedidor && Boolean(formik.errors.orgaoExpedidor)}
                             fullWidth
-                            style={{textAlign: 'left'}}
+                            sx ={{textAlign: 'left', width: '100%' }}
                         >
                             <InputLabel id="orgaoExpedidor-label">Órgão expedidor</InputLabel>
                             <Select
@@ -543,23 +541,6 @@ export default function CadastroFuncionario({cnpj}) {
                             )}
                         </FormControl>
                         <TextField
-                            id="dataRg"
-                            name="dataRg"
-                            label="Data de expedição"
-                            type="date"
-                            InputLabelProps={{ shrink: true }}
-                            value={formik.values.dataRg}
-                            onChange={formik.handleChange}
-                            error={formik.touched.dataRg && Boolean(formik.errors.dataRg)}
-                            helperText={formik.touched.dataRg && formik.errors.dataRg}
-                            style={{ marginTop: '10px' }}
-                        />
-                        <Button onClick={handleNext}style={{alignItems: 'right', marginBottom: '15px'}}>Próximo</Button>
-                    </Box>
-                )}
-                {step === 1 && (
-                    <Box className={styles['formulario']}>
-                        <TextField
                             id="cep"
                             name="cep"
                             label="CEP*"
@@ -571,9 +552,9 @@ export default function CadastroFuncionario({cnpj}) {
                             onBlur={formik.handleBlur}
                             error={formik.touched.cep && Boolean(formik.errors.cep)}
                             helperText={formik.touched.cep && formik.errors.cep}
-                            style={{ marginTop: '10px' }}
+                            sx = {{ width: '100%' }}
                         />
-                        <Box className={styles['endereco']}>
+                        <div className={styles['conjunto']}>
                             <TextField
                                 id="endereco"
                                 name="endereco"
@@ -582,7 +563,7 @@ export default function CadastroFuncionario({cnpj}) {
                                 disabled
                                 error={formik.touched.endereco && Boolean(formik.errors.endereco)}
                                 helperText={formik.touched.endereco && formik.errors.endereco}
-                                style={{ width: '80%' }}
+                                sx ={{ width: { mobile: '100%', tablet: '50%' } }}
                             />
                             <TextField
                                 id="numeroCasa"
@@ -594,57 +575,25 @@ export default function CadastroFuncionario({cnpj}) {
                                 onBlur={formik.handleBlur}
                                 error={formik.touched.numeroCasa && Boolean(formik.errors.numeroCasa)}
                                 helperText={formik.touched.numeroCasa && formik.errors.numeroCasa}
-                                style={{ width: '20%' }}
+                                sx ={{ width: { mobile: '100%', tablet: '15%' } }}
                             />
-                        </Box>
-                        <TextField
-                            id="complementoCasa"
-                            name="complementoCasa"
-                            label="Complemento"
-                            variant="standard"
-                            value={formik.values.complementoCasa}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.complementoCasa && Boolean(formik.errors.complementoCasa)}
-                            helperText={formik.touched.complementoCasa && formik.errors.complementoCasa}
-                        />
-                        <TextField
-                            id="bairro"
-                            name="bairro"
-                            label="Bairro"
-                            value={bairro}
-                            disabled
-                            error={formik.touched.bairro && Boolean(formik.errors.bairro)}
-                            helperText={formik.touched.bairro && formik.errors.bairro}
-                            style={{ width: '80%' }}
-                        />
-                        <TextField
-                            id="cidade"
-                            name="cidade"
-                            label="Cidade"
-                            value={cidade}
-                            disabled
-                            error={formik.touched.cidade && Boolean(formik.errors.cidade)}
-                            helperText={formik.touched.cidade && formik.errors.cidade}
-                            style={{ width: '80%' }}
-                        />
-                        <TextField
-                            id="estado"
-                            name="estado"
-                            label="Estado"
-                            value={estado}
-                            disabled
-                            error={formik.touched.estado && Boolean(formik.errors.estado)}
-                            helperText={formik.touched.estado && formik.errors.estado}
-                            style={{ width: '80%' }}
-                        />
-                        <Box className={styles['botoes']}>
-                            <Button onClick={handleBack}>Voltar</Button>
-                            <Button onClick={handleNext}style={{alignItems: 'right', marginBottom: '15px'}}>Próximo</Button>
-                        </Box>
+                            <TextField
+                                id="complementoCasa"
+                                name="complementoCasa"
+                                label="Complemento"
+                                variant="standard"
+                                value={formik.values.complementoCasa}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.complementoCasa && Boolean(formik.errors.complementoCasa)}
+                                helperText={formik.touched.complementoCasa && formik.errors.complementoCasa}
+                                sx ={{ width: { mobile: '100%', tablet: '35%' } }}
+                            />
+                        </div>
+                        <Button onClick={handleNext}style={{alignItems: 'right', marginBottom: '15px'}}>Próximo</Button>
                     </Box>
                 )}
-                {step === 2 && (
+                {step === 1 && (
                     <Box className={styles['formulario']}>
                         <TextField
                             id="nomeMae"
@@ -656,7 +605,7 @@ export default function CadastroFuncionario({cnpj}) {
                             onBlur={formik.handleBlur}
                             error={formik.touched.nomeMae && Boolean(formik.errors.nomeMae)}
                             helperText={formik.touched.nomeMae && formik.errors.nomeMae}
-                            style={{ marginTop: '10px' }}
+                            fullWidth
                         />
                         <TextField
                             id="nomePai"
@@ -668,13 +617,13 @@ export default function CadastroFuncionario({cnpj}) {
                             onBlur={formik.handleBlur}
                             error={formik.touched.nomePai && Boolean(formik.errors.nomePai)}
                             helperText={formik.touched.nomePai && formik.errors.nomePai}
-                            style={{ marginTop: '10px' }}
+                            fullWidth
                         />
                         <FormControl
                             variant="standard"
                             error={formik.touched.estadoCivil && Boolean(formik.errors.estadoCivil)}
                             fullWidth
-                            style={{textAlign: 'left'}}
+                            sx ={{textAlign: 'left'}}
                         >
                             <InputLabel id="estadoCivil-label">Estado civil*</InputLabel>
                             <Select
@@ -709,88 +658,20 @@ export default function CadastroFuncionario({cnpj}) {
                             onBlur={formik.handleBlur}
                             error={formik.touched.nomeConjuge && Boolean(formik.errors.nomeConjuge)}
                             helperText={formik.touched.nomeConjuge && formik.errors.nomeConjuge}
-                            style={{ marginTop: '10px' }}
                         />
-                        <TextField
-                            id="qntDependente"
-                            name="qntDependente"
-                            label="Quantidade dependentes*"
-                            variant="standard"
-                            value={formik.values.qntDependente}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.qntDependente && Boolean(formik.errors.qntDependente)}
-                            helperText={formik.touched.qntDependente && formik.errors.qntDependente}
-                        />
-                        {formik.values.qntDependente > 0 && (
-                            [...Array(Number(formik.values.qntDependente)).keys()].map((index) => (
-                                <Box key={index} className={styles['formDependente']}>
-                                    <TextField
-                                        id={`nomeDependente${index}`}
-                                        name={`dependentes[${index}].nomeDependente`}
-                                        label={`Nome do ${index + 1}º dependente`}
-                                        variant="standard"
-                                        value={formik.values.dependentes[index]?.nomeDependente || ''}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        error={formik.touched.dependentes && formik.touched.dependentes[index]?.nomeDependente && Boolean(formik.errors.dependentes?.[index]?.nomeDependente)}
-                                        helperText={formik.touched.dependentes && formik.touched.dependentes[index]?.nomeDependente && formik.errors.dependentes?.[index]?.nomeDependente}
-                                        style={{ marginTop: '10px' }}
-                                    />
-                                    <TextField
-                                        id={`dataNascimentoDependente${index}`}
-                                        name={`dependentes[${index}].dataNascimentoDependente`}
-                                        label="Data nascimento*"
-                                        InputLabelProps={{ shrink: true }}
-                                        type="date"
-                                        value={formik.values.dependentes[index]?.dataNascimentoDependente || ''}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        error={formik.touched.dependentes && formik.touched.dependentes[index]?.dataNascimentoDependente && Boolean(formik.errors.dependentes?.[index]?.dataNascimentoDependente)}
-                                        helperText={formik.touched.dependentes && formik.touched.dependentes[index]?.dataNascimentoDependente && formik.errors.dependentes?.[index]?.dataNascimentoDependente}
-                                        style={{ marginTop: '10px' }}
-                                    />
-                                    <MaskedTextField
-                                        mask="999.999.999-99"
-                                        id={`cpfDependente${index}`}
-                                        name={`dependentes[${index}].cpfDependente`}
-                                        label="CPF*"
-                                        variant="standard"
-                                        value={formik.values.dependentes[index]?.cpfDependente || ''}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        error={formik.touched.dependentes && formik.touched.dependentes[index]?.cpfDependente && Boolean(formik.errors.dependentes?.[index]?.cpfDependente)}
-                                        helperText={formik.touched.dependentes && formik.touched.dependentes[index]?.cpfDependente && formik.errors.dependentes?.[index]?.cpfDependente}
-                                        style={{ marginTop: '10px' }}
-                                    />
-                                    <TextField
-                                        id={`localNascimentoDependente${index}`}
-                                        name={`dependentes[${index}].localNascimentoDependente`}
-                                        label="Local de nascimento*"
-                                        variant="standard"
-                                        value={formik.values.dependentes?.[index]?.localNascimentoDependente || ''}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        error={formik.touched.dependentes && formik.touched.dependentes?.[index]?.localNascimentoDependente && Boolean(formik.errors.dependentes?.[index]?.localNascimentoDependente)}
-                                        helperText={formik.touched.dependentes && formik.touched.dependentes?.[index]?.localNascimentoDependente && formik.errors.dependentes?.[index]?.localNascimentoDependente}
-                                        style={{ marginTop: '10px' }}
-                                    />
-                                </Box>
-                            ))
-                        )}
                         <Box className={styles['botoes']}>
                             <Button onClick={handleBack}>Voltar</Button>
-                            <Button onClick={handleNext}style={{alignItems: 'right', marginBottom: '15px'}}>Próximo</Button>
+                            <Button onClick={handleNext} style={{alignItems: 'right', marginBottom: '15px'}}>Próximo</Button>
                         </Box>
                     </Box>
                 )}
-                {step === 3 && (
+                {step === 2 && (
                     <Box className={styles['formulario']}>
                         <FormControl
                             variant="standard"
                             error={formik.touched.escolaridade && Boolean(formik.errors.escolaridade)}
                             fullWidth
-                            style={{ textAlign: 'left' }}
+                            style ={{ textAlign: 'left' }}
                         >
                             <InputLabel id="escolaridade-label">Escolaridade*</InputLabel>
                             <Select
@@ -832,43 +713,46 @@ export default function CadastroFuncionario({cnpj}) {
                             error={formik.touched.pis && Boolean(formik.errors.pis)}
                             helperText={formik.touched.pis && formik.errors.pis}
                         />
-                        <TextField
-                            id="numeroCt"
-                            name="numeroCt"
-                            label="Carteira de trabalho*"
-                            value={formik.values.numeroCt}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.numeroCt && Boolean(formik.errors.numeroCt)}
-                            helperText={formik.touched.numeroCt && formik.errors.numeroCt}
-                        />
-                        <TextField
-                            id="serie"
-                            name="serie"
-                            label="Série*"
-                            value={formik.values.serie}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.serie && Boolean(formik.errors.serie)}
-                            helperText={formik.touched.serie && formik.errors.serie}
-                        />
-                        <TextField
-                            id="dataCt"
-                            name="dataCt"
-                            label="Data carteira de trabalho*"
-                            type="date"
-                            InputLabelProps={{ shrink: true }}
-                            value={formik.values.dataCt}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.dataCt && Boolean(formik.errors.dataCt)}
-                            helperText={formik.touched.dataCt && formik.errors.dataCt}
-                            style={{ marginTop: '10px' }}
-                        />
-                        <FormControl
+                        <div className={styles['conjunto']}>
+                            <TextField
+                                id="numeroCt"
+                                name="numeroCt"
+                                label="Carteira de trabalho*"
+                                value={formik.values.numeroCt}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.numeroCt && Boolean(formik.errors.numeroCt)}
+                                helperText={formik.touched.numeroCt && formik.errors.numeroCt}
+                                sx ={{ width: { mobile: '100%', tablet: '40%' } }}
+                            />
+                            <TextField
+                                id="serie"
+                                name="serie"
+                                label="Série*"
+                                value={formik.values.serie}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.serie && Boolean(formik.errors.serie)}
+                                helperText={formik.touched.serie && formik.errors.serie}
+                                sx ={{ width: { mobile: '100%', tablet: '20%' }, mt: { mobile: 3, tablet: 0} }}
+                            />
+                            <TextField
+                                id="dataCt"
+                                name="dataCt"
+                                label="Data carteira de trabalho*"
+                                type="date"
+                                InputLabelProps={{ shrink: true }}
+                                value={formik.values.dataCt}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.dataCt && Boolean(formik.errors.dataCt)}
+                                helperText={formik.touched.dataCt && formik.errors.dataCt}
+                                sx ={{ width: { mobile: '100%', tablet: '25%' }, mt: { mobile: 3, tablet: 0} }}
+                            />
+                            <FormControl
                             component="fieldset"
                             error={formik.touched.carteiraDigital && Boolean(formik.errors.carteiraDigital)}
-                            style={{ textAlign: 'left' }}
+                            sx ={{ width: { mobile: '100%', tablet: '15%' }, mt: { mobile: 3, tablet: 0} }}
                         >
                             <FormControlLabel
                                 control={
@@ -883,110 +767,121 @@ export default function CadastroFuncionario({cnpj}) {
                                 }
                                 label="Carteira digital"
                             />
-                            {formik.touched.carteiraDigital && formik.errors.carteiraDigital && (
-                                <FormHelperText>{formik.errors.carteiraDigital}</FormHelperText>
-                            )}
-                        </FormControl>
-                        <TextField
-                            id="tituloEleitoral"
-                            name="tituloEleitoral"
-                            label="Título eleitoral"
-                            value={formik.values.tituloEleitoral}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.tituloEleitoral && Boolean(formik.errors.tituloEleitoral)}
-                            helperText={formik.touched.tituloEleitoral && formik.errors.tituloEleitoral}
-                        />
-                        <TextField
-                            id="zona"
-                            name="zona"
-                            label="Zona"
-                            value={formik.values.zona}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.zona && Boolean(formik.errors.zona)}
-                            helperText={formik.touched.zona && formik.errors.zona}
-                        />
-                        <TextField
-                            id="secao"
-                            name="secao"
-                            label="Seção"
-                            value={formik.values.secao}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.secao && Boolean(formik.errors.secao)}
-                            helperText={formik.touched.secao && formik.errors.secao}
-                        />
+                                {formik.touched.carteiraDigital && formik.errors.carteiraDigital && (
+                                    <FormHelperText>{formik.errors.carteiraDigital}</FormHelperText>
+                                )}
+                            </FormControl>
+                        </div>
+                        <div className={styles['conjunto']}>
+                            <TextField
+                                id="tituloEleitoral"
+                                name="tituloEleitoral"
+                                label="Título eleitoral"
+                                value={formik.values.tituloEleitoral}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.tituloEleitoral && Boolean(formik.errors.tituloEleitoral)}
+                                helperText={formik.touched.tituloEleitoral && formik.errors.tituloEleitoral}
+                                sx ={{ width: { mobile: '100%', tablet: '50%' } }}
+                            />
+                            <TextField
+                                id="zona"
+                                name="zona"
+                                label="Zona"
+                                value={formik.values.zona}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.zona && Boolean(formik.errors.zona)}
+                                helperText={formik.touched.zona && formik.errors.zona}
+                                sx ={{ width: { mobile: '100%', tablet: '25%' }, mt: { mobile: 3, tablet: 0} }}
+                            />
+                            <TextField
+                                id="secao"
+                                name="secao"
+                                label="Seção"
+                                value={formik.values.secao}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.secao && Boolean(formik.errors.secao)}
+                                helperText={formik.touched.secao && formik.errors.secao}
+                                sx ={{ width: { mobile: '100%', tablet: '25%' }, mt: { mobile: 3, tablet: 0} }}
+                            />
+                        </div>
                         <Box className={styles['botoes']}>
                             <Button onClick={handleBack}>Voltar</Button>
                             <Button onClick={handleNext} style={{ alignItems: 'right', marginBottom: '15px' }}>Próximo</Button>
                         </Box>
                     </Box>
                 )}
-                {step === 4 && (
+                {step === 3 && (
                     <Box className={styles['formulario']}>
-                        <TextField
-                            id="funcao"
-                            name="funcao"
-                            label="Função*"
-                            variant="standard"
-                            value={formik.values.funcao}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.funcao && Boolean(formik.errors.funcao)}
-                            helperText={formik.touched.funcao && formik.errors.funcao}
-                            style={{ marginTop: '10px' }}
-                        />
-                        <TextField
-                            id="dataAdmissao"
-                            name="dataAdmissao"
-                            label="Data de admissão*"
-                            type="date"
-                            InputLabelProps={{ shrink: true }}
-                            value={formik.values.dataAdmissao}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.dataAdmissao && Boolean(formik.errors.dataAdmissao)}
-                            helperText={formik.touched.dataAdmissao && formik.errors.dataAdmissao}
-                            style={{ marginTop: '10px' }}
-                        />
-                        <CurrencyInput
-                            id="salario"
-                            name="salario"
-                            label="Salário"
-                            value={formik.values.salario}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            onFocus={formik.handleFocus}
-                            error={formik.touched.salario && Boolean(formik.errors.salario)}
-                            helperText={formik.touched.salario && formik.errors.salario}
-                        />
-                        <FormControl
-                            variant="standard"
-                            error={formik.touched.contratoExperiencia && Boolean(formik.errors.contratoExperiencia)}
-                            fullWidth
-                            style={{textAlign: 'left'}}
-                        >
-                            <InputLabel id="contratoExperiencia-label">Contrato de experiência</InputLabel>
-                            <Select
-                                labelId="contratoExperiencia-label"
-                                id="contratoExperiencia"
-                                name="contratoExperiencia"
-                                value={formik.values.contratoExperiencia}
+                        <div className={styles['conjunto']}>
+                            <TextField
+                                id="funcao"
+                                name="funcao"
+                                label="Função*"
+                                variant="standard"
+                                value={formik.values.funcao}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
+                                error={formik.touched.funcao && Boolean(formik.errors.funcao)}
+                                helperText={formik.touched.funcao && formik.errors.funcao}
+                                sx ={{ width: { mobile: '100%', tablet: '70%' } }}
+                            />
+                            <TextField
+                                id="dataAdmissao"
+                                name="dataAdmissao"
+                                label="Data de admissão*"
+                                type="date"
+                                InputLabelProps={{ shrink: true }}
+                                value={formik.values.dataAdmissao}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.dataAdmissao && Boolean(formik.errors.dataAdmissao)}
+                                helperText={formik.touched.dataAdmissao && formik.errors.dataAdmissao}
+                                sx ={{ width: { mobile: '100%', tablet: '30%' }, mt: { mobile: 3, tablet: 0} }}
+                            />
+                        </div>
+                        <div className={styles['conjunto']}>
+                            <CurrencyInput
+                                id="salario"
+                                name="salario"
+                                label="Salário*"
+                                value={formik.values.salario}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                onFocus={formik.handleFocus}
+                                error={formik.touched.salario && Boolean(formik.errors.salario)}
+                                helperText={formik.touched.salario && formik.errors.salario}
+                            />
+                            <FormControl
+                                variant="standard"
+                                error={formik.touched.contratoExperiencia && Boolean(formik.errors.contratoExperiencia)}
+                                fullWidth
+                                style={{textAlign: 'left'}}
+                                sx ={{ width: { mobile: '100%', tablet: '50%' }, mt: { mobile: 3, tablet: 0} }}
                             >
-                                <MenuItem value="">
-                                    <em>Selecione</em>
-                                </MenuItem>
-                                <MenuItem value="30+30dias">30 + 30 dias</MenuItem>
-                                <MenuItem value="45+45dias">45 + 45 dias</MenuItem>
-                                <MenuItem value="Nenhum">Não se aplica</MenuItem>
-                            </Select>
-                            {formik.touched.contratoExperiencia && formik.errors.contratoExperiencia && (
-                                <FormHelperText>{formik.errors.contratoExperiencia}</FormHelperText>
-                            )}
-                        </FormControl>
+                                <InputLabel id="contratoExperiencia-label">Contrato de experiência*</InputLabel>
+                                <Select
+                                    labelId="contratoExperiencia-label"
+                                    id="contratoExperiencia"
+                                    name="contratoExperiencia"
+                                    value={formik.values.contratoExperiencia}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                >
+                                    <MenuItem value="">
+                                        <em>Selecione</em>
+                                    </MenuItem>
+                                    <MenuItem value="30+30dias">30 + 30 dias</MenuItem>
+                                    <MenuItem value="45+45dias">45 + 45 dias</MenuItem>
+                                    <MenuItem value="Nenhum">Não se aplica</MenuItem>
+                                </Select>
+                                {formik.touched.contratoExperiencia && formik.errors.contratoExperiencia && (
+                                    <FormHelperText>{formik.errors.contratoExperiencia}</FormHelperText>
+                                )}
+                            </FormControl>
+                        </div>
                         <TextField
                             id="horarios"
                             name="horarios"
@@ -997,92 +892,97 @@ export default function CadastroFuncionario({cnpj}) {
                             onBlur={formik.handleBlur}
                             error={formik.touched.horarios && Boolean(formik.errors.horarios)}
                             helperText={formik.touched.horarios && formik.errors.horarios}
-                            style={{ marginTop: '10px' }}
                         />
-                        <FormControl
-                            component="fieldset"
-                            error={formik.touched.insalubridade && Boolean(formik.errors.insalubridade)}
-                        >
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                id="insalubridade"
-                                name="insalubridade"
-                                checked={formik.values.insalubridade}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                color="primary"
+                        <div className={styles['conjunto']}>
+                            <FormControl
+                                component="fieldset"
+                                error={formik.touched.insalubridade && Boolean(formik.errors.insalubridade)}
+                                sx ={{ width: { mobile: '100%', tablet: '20%' } }}
+                            >
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                    id="insalubridade"
+                                    name="insalubridade"
+                                    checked={formik.values.insalubridade}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    color="primary"
+                                    />
+                                }
+                                label="Insalubridade"
                                 />
-                            }
-                            label="Insalubridade"
-                            />
-                            {formik.touched.insalubridade && formik.errors.insalubridade && (
-                            <FormHelperText>{formik.errors.insalubridade}</FormHelperText>
-                            )}
-                        </FormControl>
-                        <FormControl
-                            component="fieldset"
-                            error={formik.touched.periculosidade && Boolean(formik.errors.periculosidade)}
-                        >
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                id="periculosidade"
-                                name="periculosidade"
-                                checked={formik.values.periculosidade}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                color="primary"
+                                {formik.touched.insalubridade && formik.errors.insalubridade && (
+                                <FormHelperText>{formik.errors.insalubridade}</FormHelperText>
+                                )}
+                            </FormControl>
+                            <FormControl
+                                component="fieldset"
+                                error={formik.touched.periculosidade && Boolean(formik.errors.periculosidade)}
+                                sx ={{ width: { mobile: '100%', tablet: '25%' }, mt: { mobile: 3, tablet: 0} }}
+                            >
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                    id="periculosidade"
+                                    name="periculosidade"
+                                    checked={formik.values.periculosidade}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    color="primary"
+                                    />
+                                }
+                                label="Periculosidade"
                                 />
-                            }
-                            label="Periculosidade"
-                            />
-                            {formik.touched.periculosidade && formik.errors.periculosidade && (
-                            <FormHelperText>{formik.errors.periculosidade}</FormHelperText>
-                            )}
-                        </FormControl>
-                        <FormControl
-                            component="fieldset"
-                            error={formik.touched.quebraDeCaixa && Boolean(formik.errors.quebraDeCaixa)}
-                        >
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                id="quebraDeCaixa"
-                                name="quebraDeCaixa"
-                                checked={formik.values.quebraDeCaixa}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                color="primary"
+                                {formik.touched.periculosidade && formik.errors.periculosidade && (
+                                <FormHelperText>{formik.errors.periculosidade}</FormHelperText>
+                                )}
+                            </FormControl>
+                            <FormControl
+                                component="fieldset"
+                                error={formik.touched.quebraDeCaixa && Boolean(formik.errors.quebraDeCaixa)}
+                                sx ={{ width: { mobile: '100%', tablet: '30%' }, mt: { mobile: 3, tablet: 0} }}
+                            >
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                    id="quebraDeCaixa"
+                                    name="quebraDeCaixa"
+                                    checked={formik.values.quebraDeCaixa}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    color="primary"
+                                    />
+                                }
+                                label="Quebra de caixa"
                                 />
-                            }
-                            label="Quebra de caixa"
-                            />
-                            {formik.touched.quebraDeCaixa && formik.errors.quebraDeCaixa && (
-                            <FormHelperText>{formik.errors.quebraDeCaixa}</FormHelperText>
-                            )}
-                        </FormControl>
-                        <FormControl
-                            component="fieldset"
-                            error={formik.touched.valeTransporte && Boolean(formik.errors.valeTransporte)}
-                        >
-                        <FormControlLabel
-                            control={
-                                <Checkbox
-                                id="valeTransporte"
-                                name="valeTransporte"
-                                checked={formik.values.valeTransporte}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                color="primary"
+                                {formik.touched.quebraDeCaixa && formik.errors.quebraDeCaixa && (
+                                <FormHelperText>{formik.errors.quebraDeCaixa}</FormHelperText>
+                                )}
+                            </FormControl>
+                            <FormControl
+                                component="fieldset"
+                                error={formik.touched.valeTransporte && Boolean(formik.errors.valeTransporte)}
+                                sx ={{ width: { mobile: '100%', tablet: '25%' }, mt: { mobile: 3, tablet: 0} }}
+                            >
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                    id="valeTransporte"
+                                    name="valeTransporte"
+                                    checked={formik.values.valeTransporte}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    color="primary"
+                                    />
+                                }
+                                label="Vale transporte"
                                 />
-                            }
-                            label="Vale transporte"
-                            />
-                            {formik.touched.valeTransporte && formik.errors.valeTransporte && (
-                            <FormHelperText>{formik.errors.valeTransporte}</FormHelperText>
-                            )}
-                        </FormControl>
+                                {formik.touched.valeTransporte && formik.errors.valeTransporte && (
+                                <FormHelperText>{formik.errors.valeTransporte}</FormHelperText>
+                                )}
+                            </FormControl>
+                        </div>
                         <TextField
                             id="quantidadeVales"
                             name="quantidadeVales"
@@ -1093,23 +993,32 @@ export default function CadastroFuncionario({cnpj}) {
                             onBlur={formik.handleBlur}
                             error={formik.touched.quantidadeVales && Boolean(formik.errors.quantidadeVales)}
                             helperText={formik.touched.quantidadeVales && formik.errors.quantidadeVales}
-                            style={{ marginTop: '10px' }}
                         />
                         <Box className={styles['botoes']}>
                             <Button onClick={handleBack}>Voltar</Button>
-                            <Button type="submit">Cadastrar</Button>
+                            <Button onClick={botaoFinalizarFuncionario}>Cadastrar</Button>
                         </Box>
                     </Box>
                 )}
-
+                {step === 4 && funcionarioId && !cadastroConcluido && (
+                    <Box className={styles['formulario']}>
+                        <div className={styles['formDependente']}>
+                            <TabelaDependentes funcionario_id={funcionarioId}/>
+                        </div>
+                        <Box className={styles['botoes']}>
+                            <Button onClick={handleBack}>Voltar</Button>
+                            <Button onClick={botaoFinalizarCadastro}>Finalizar cadastro</Button>
+                        </Box>
+                    </Box>
+                )}
                 {message && (
                     <h3 style={{ fontSize: '0.84em', color: '#202949', textAlign: 'left' }}>
                         <strong>{message}</strong>
                     </h3>
                 )}
             </form>
-
             <h5 style={{ textAlign: 'left', fontWeight: 'normal' }}>* Campos obrigatórios</h5>
         </motion.div>
+    </ThemeProvider>
     );
 };

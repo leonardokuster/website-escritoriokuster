@@ -1,0 +1,22 @@
+.formulario {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.tabela {
+    width: 60vw;
+    margin-bottom: 20px;
+}
+
+.paragrafo {
+    text-align: center;
+    padding: 10px 0px 30px 0px;
+}
+
+.botoes {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}

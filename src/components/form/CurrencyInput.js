@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
 import { TextField } from '@mui/material';
 import InputMask from 'react-input-mask';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+    breakpoints: {
+      values: {
+        mobile: 0,
+        tablet: 768,
+      },
+    },
+});
 
 export default function CurrencyInput(props) {
     const { id, name, label, value, onChange, onBlur = () => {}, onFocus = () => {}, error, helperText } = props;
@@ -50,25 +60,27 @@ export default function CurrencyInput(props) {
     };
 
     return (
-        <InputMask
-            mask={mask}
-            value={value}
-            onChange={onChange}
-            onBlur={handleBlur}
-            onFocus={handleFocus}
-        >
-            {(inputProps) => (
-                <TextField
-                    {...inputProps}
-                    id={id}
-                    name={name}
-                    label={label}
-                    variant="standard"
-                    error={error}
-                    helperText={helperText}
-                    style={{ marginTop: '10px' }}
-                />
-            )}
-        </InputMask>
+        <ThemeProvider theme={theme}>
+            <InputMask
+                mask={mask}
+                value={value}
+                onChange={onChange}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+            >
+                {(inputProps) => (
+                    <TextField
+                        {...inputProps}
+                        id={id}
+                        name={name}
+                        label={label}
+                        variant="standard"
+                        error={error}
+                        helperText={helperText}
+                        sx ={{ width: { mobile: '100%', tablet: '50%' } }}
+                    />
+                )}
+            </InputMask>
+        </ThemeProvider>
     );
 }

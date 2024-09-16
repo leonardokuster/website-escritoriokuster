@@ -82,7 +82,6 @@ export default function GerenciamentoUsuarios() {
         if (empresaSelecionada && empresaSelecionada.id) {
             try {
                 const response = await axios.get(`http://localhost:3001/employees/${empresaSelecionada.id}`);
-                console.log('Funcionários encontrados:', response.data);
             } catch (error) {
                 console.error('Erro ao buscar funcionários:', error);
             }
@@ -107,7 +106,7 @@ export default function GerenciamentoUsuarios() {
     }
 
     return (
-        <div>
+        <div className={styles['pagina']}>
         {empresa ? (
             <div>
                 {usuario.qntEmpresas > 1 ? (
