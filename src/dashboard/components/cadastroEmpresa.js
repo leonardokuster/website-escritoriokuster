@@ -8,6 +8,16 @@ import { motion } from "framer-motion";
 import InputMask from 'react-input-mask';
 import PhoneInput from '../../components/form/PhoneInput';
 import CurrencyInput from '../../components/form/CurrencyInput';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+    breakpoints: {
+      values: {
+        mobile: 0,
+        tablet: 768,
+      },
+    },
+});
 
 const validationSchema = yup.object({
     cnpj: yup
@@ -158,188 +168,201 @@ export default function CadastroEmpresa() {
     };
 
     return (
-        <motion.div
+        <ThemeProvider theme={theme}>
+            <motion.div
             className={styles['cadastroform']}
             initial={{ opacity: 0, x: -100 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-        >
+            >
 
-            <form onSubmit={formik.handleSubmit}>
-                <Box className={styles['formulario']}>
-                    <InputMask
-                        mask="99.999.999/9999-99"
-                        value={formik.values.cnpj}
-                        onChange={formik.handleChange}
-                    >
-                        {() => (
-                            <TextField
-                                id="cnpj"
-                                name="cnpj"
-                                label="CNPJ"
-                                error={formik.touched.cnpj && Boolean(formik.errors.cnpj)}
-                                helperText={formik.touched.cnpj && formik.errors.cnpj}
+                <form onSubmit={formik.handleSubmit}>
+                    <Box className={styles['formulario']}>
+                        <div className={styles['conjunto']}>
+                            <InputMask
+                                mask="99.999.999/9999-99"
+                                value={formik.values.cnpj}
+                                onChange={formik.handleChange}
+                            >
+                                {() => (
+                                    <TextField
+                                        id="cnpj"
+                                        name="cnpj"
+                                        label="CNPJ"
+                                        error={formik.touched.cnpj && Boolean(formik.errors.cnpj)}
+                                        helperText={formik.touched.cnpj && formik.errors.cnpj}
+                                        sx ={{ width: { mobile: '100%', tablet: '50%' } }}
+                                    />
+                                )}
+                            </InputMask>
+                            <CurrencyInput
+                                id="capitalSocial"
+                                name="capitalSocial"
+                                label="Capital social"
+                                value={formik.values.capitalSocial}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                onFocus={formik.handleFocus}
+                                error={formik.touched.capitalSocial && Boolean(formik.errors.capitalSocial)}
+                                helperText={formik.touched.capitalSocial && formik.errors.capitalSocial}
                             />
-                        )}
-                    </InputMask>
-                    <TextField
-                        id="nomeFantasia"
-                        name="nomeFantasia"
-                        label="Nome fantasia"
-                        variant="standard"
-                        value={formik.values.nomeFantasia}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={formik.touched.nomeFantasia && Boolean(formik.errors.nomeFantasia)}
-                        helperText={formik.touched.nomeFantasia && formik.errors.nomeFantasia}
-                        style={{ marginTop: '10px' }}
-                    />
-                    <TextField
-                        id="razaoSocial"
-                        name="razaoSocial"
-                        label="Razão social"
-                        variant="standard"
-                        value={formik.values.razaoSocial}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={formik.touched.razaoSocial && Boolean(formik.errors.razaoSocial)}
-                        helperText={formik.touched.razaoSocial && formik.errors.razaoSocial}
-                    />
-                    <TextField
-                        id="atividadesExercidas"
-                        name="atividadesExercidas"
-                        label="Atividades exercidas"
-                        variant="standard"
-                        value={formik.values.atividadesExercidas}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={formik.touched.atividadesExercidas && Boolean(formik.errors.atividadesExercidas)}
-                        helperText={formik.touched.atividadesExercidas && formik.errors.atividadesExercidas}
-                    />
-                    <CurrencyInput
-                        id="capitalSocial"
-                        name="capitalSocial"
-                        label="Capital social"
-                        value={formik.values.capitalSocial}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        onFocus={formik.handleFocus}
-                        error={formik.touched.capitalSocial && Boolean(formik.errors.capitalSocial)}
-                        helperText={formik.touched.capitalSocial && formik.errors.capitalSocial}
-                    />
-                    <TextField
-                        id="cep"
-                        name="cep"
-                        label="CEP"
-                        value={formik.values.cep}
-                        onChange={(e) => {
-                            formik.handleChange(e);
-                            fetchAddress(e.target.value);
-                        }}
-                        onBlur={formik.handleBlur}
-                        error={formik.touched.cep && Boolean(formik.errors.cep)}
-                        helperText={formik.touched.cep && formik.errors.cep}
-                        style={{ marginTop: '10px' }}
-                    />
-                    <Box className={styles['endereco']}>
+                        </div>
+                        <div className={styles['conjunto']}>
+                            <TextField
+                                id="razaoSocial"
+                                name="razaoSocial"
+                                label="Razão social"
+                                variant="standard"
+                                value={formik.values.razaoSocial}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.razaoSocial && Boolean(formik.errors.razaoSocial)}
+                                helperText={formik.touched.razaoSocial && formik.errors.razaoSocial}
+                                sx ={{ width: { mobile: '100%', tablet: '50%' } }}
+                            />
+                            <TextField
+                                id="nomeFantasia"
+                                name="nomeFantasia"
+                                label="Nome fantasia"
+                                variant="standard"
+                                value={formik.values.nomeFantasia}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.nomeFantasia && Boolean(formik.errors.nomeFantasia)}
+                                helperText={formik.touched.nomeFantasia && formik.errors.nomeFantasia}
+                                sx ={{ width: { mobile: '100%', tablet: '50%' }, mt: { mobile: 3, tablet: 0} }}
+                            />
+                        </div>
                         <TextField
-                            id="endereco"
-                            name="endereco"
-                            label="Endereço"
-                            value={endereco}
-                            disabled
-                            error={formik.touched.endereco && Boolean(formik.errors.endereco)}
-                            helperText={formik.touched.endereco && formik.errors.endereco}
-                            style={{ width: '80%' }}
-                        />
-                        <TextField
-                            id="numeroEmpresa"
-                            name="numeroEmpresa"
-                            label="Número"
+                            id="atividadesExercidas"
+                            name="atividadesExercidas"
+                            label="Atividades exercidas"
                             variant="standard"
-                            value={formik.values.numeroEmpresa}
+                            value={formik.values.atividadesExercidas}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            error={formik.touched.numeroEmpresa && Boolean(formik.errors.numeroEmpresa)}
-                            helperText={formik.touched.numeroEmpresa && formik.errors.numeroEmpresa}
-                            style={{ width: '20%' }}
+                            error={formik.touched.atividadesExercidas && Boolean(formik.errors.atividadesExercidas)}
+                            helperText={formik.touched.atividadesExercidas && formik.errors.atividadesExercidas}
                         />
+                        <div className={styles['conjunto']}>
+                            <TextField
+                                id="cep"
+                                name="cep"
+                                label="CEP"
+                                value={formik.values.cep}
+                                onChange={(e) => {
+                                    formik.handleChange(e);
+                                    fetchAddress(e.target.value);
+                                }}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.cep && Boolean(formik.errors.cep)}
+                                helperText={formik.touched.cep && formik.errors.cep}
+                                sx ={{ width: { mobile: '100%', tablet: '40%' } }}
+                            />
+                            <TextField
+                                id="endereco"
+                                name="endereco"
+                                label="Endereço"
+                                value={endereco}
+                                disabled
+                                error={formik.touched.endereco && Boolean(formik.errors.endereco)}
+                                helperText={formik.touched.endereco && formik.errors.endereco}
+                                sx ={{ width: { mobile: '100%', tablet: '40%' }, mt: { mobile: 3, tablet: 0} }}
+                            />
+                            <TextField
+                                id="numeroEmpresa"
+                                name="numeroEmpresa"
+                                label="Número"
+                                variant="standard"
+                                value={formik.values.numeroEmpresa}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.numeroEmpresa && Boolean(formik.errors.numeroEmpresa)}
+                                helperText={formik.touched.numeroEmpresa && formik.errors.numeroEmpresa}
+                                sx ={{ width: { mobile: '100%', tablet: '20%' }, mt: { mobile: 3, tablet: 0} }}
+                            />
+                        </div>
+                        <TextField
+                                id="complementoEmpresa"
+                                name="complementoEmpresa"
+                                label="Complemento"
+                                variant="standard"
+                                value={formik.values.complementoEmpresa}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.complementoEmpresa && Boolean(formik.errors.complementoEmpresa)}
+                                helperText={formik.touched.complementoEmpresa && formik.errors.complementoEmpresa}
+                                sx ={{ width: { mobile: '100%', tablet: '100%' } }}
+                            />
+                        <div className={styles['conjunto']}>
+                            <TextField
+                                id="emailEmpresa"
+                                name="emailEmpresa"
+                                label="E-mail"
+                                variant="standard"
+                                value={formik.values.emailEmpresa}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.emailEmpresa && Boolean(formik.errors.emailEmpresa)}
+                                helperText={formik.touched.emailEmpresa && formik.errors.emailEmpresa}
+                                sx ={{ width: { mobile: '100%', tablet: '70%' } }}
+                            />
+                            <PhoneInput
+                                id="telefoneEmpresa"
+                                name="telefoneEmpresa"
+                                label="Telefone da empresa"
+                                value={formik.values.telefoneEmpresa}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                onFocus={formik.handleFocus}
+                                error={formik.touched.telefoneEmpresa && Boolean(formik.errors.telefoneEmpresa)}
+                                helperText={formik.touched.telefoneEmpresa && formik.errors.telefoneEmpresa}
+                            />
+                        </div>
+                        <div className={styles['socios']}>
+                            <TextField
+                                id="qntSocios"
+                                name="qntSocios"
+                                label="Quantidade sócios"
+                                variant="standard"
+                                value={formik.values.qntSocios}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                error={formik.touched.qntSocios && Boolean(formik.errors.qntSocios)}
+                                helperText={formik.touched.qntSocios && formik.errors.qntSocios}
+                                sx ={{ width: { mobile: '100%', tablet: '15%' } }}
+                            />
+                            {formik.values.qntSocios > 0 && (
+                                [...Array(Number(formik.values.qntSocios)).keys()].map((index) => (
+                                    <Box key={index}>
+                                        <TextField
+                                            id={`nomeSocio${index}`}
+                                            name={`socios[${index}].nomeSocio`}
+                                            label={`Nome do ${index + 1}º sócio`}
+                                            variant="standard"
+                                            value={formik.values.socios[index]?.nomeSocio || ''}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            error={formik.touched.socios && formik.touched.socios[index]?.nomeSocio && Boolean(formik.errors.socios?.[index]?.nomeSocio)}
+                                            helperText={formik.touched.socios && formik.touched.socios[index]?.nomeSocio && formik.errors.socios?.[index]?.nomeSocio}
+                                            sx ={{ width: { mobile: '100%', tablet: '100%' }, mt: { mobile: 3, tablet: 0} }} 
+                                        />
+                                    </Box>
+                                ))
+                            )}
+                        </div>
                     </Box>
-                    <TextField
-                        id="complementoEmpresa"
-                        name="complementoEmpresa"
-                        label="Complemento"
-                        variant="standard"
-                        value={formik.values.complementoEmpresa}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={formik.touched.complementoEmpresa && Boolean(formik.errors.complementoEmpresa)}
-                        helperText={formik.touched.complementoEmpresa && formik.errors.complementoEmpresa}
-                    />
-                    <TextField
-                        id="emailEmpresa"
-                        name="emailEmpresa"
-                        label="E-mail"
-                        variant="standard"
-                        value={formik.values.emailEmpresa}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={formik.touched.emailEmpresa && Boolean(formik.errors.emailEmpresa)}
-                        helperText={formik.touched.emailEmpresa && formik.errors.emailEmpresa}
-                    />
-                    <PhoneInput
-                        id="telefoneEmpresa"
-                        name="telefoneEmpresa"
-                        label="Telefone da empresa"
-                        value={formik.values.telefoneEmpresa}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        onFocus={formik.handleFocus}
-                        error={formik.touched.telefoneEmpresa && Boolean(formik.errors.telefoneEmpresa)}
-                        helperText={formik.touched.telefoneEmpresa && formik.errors.telefoneEmpresa}
-                    />
-                    <TextField
-                        id="qntSocios"
-                        name="qntSocios"
-                        label="Quantidade sócios"
-                        variant="standard"
-                        value={formik.values.qntSocios}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        error={formik.touched.qntSocios && Boolean(formik.errors.qntSocios)}
-                        helperText={formik.touched.qntSocios && formik.errors.qntSocios}
-                        style={{ width: '20%' }}
-                    />
-                    {formik.values.qntSocios > 0 && (
-                        [...Array(Number(formik.values.qntSocios)).keys()].map((index) => (
-                            <Box key={index}>
-                                <TextField
-                                    id={`nomeSocio${index}`}
-                                    name={`socios[${index}].nomeSocio`}
-                                    label={`Nome do ${index + 1}º sócio`}
-                                    variant="standard"
-                                    value={formik.values.socios[index]?.nomeSocio || ''}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    error={formik.touched.socios && formik.touched.socios[index]?.nomeSocio && Boolean(formik.errors.socios?.[index]?.nomeSocio)}
-                                    helperText={formik.touched.socios && formik.touched.socios[index]?.nomeSocio && formik.errors.socios?.[index]?.nomeSocio}
-                                    style={{ marginTop: '10px' }}
-                                />
-                            </Box>
-                        ))
-                    )}
-                </Box>
-                
-                <Box className={styles['botoes']}>
-                    <Button type="submit">Cadastrar</Button>
-                </Box>
+                    <Box className={styles['botoes']}>
+                        <Button type="submit">Cadastrar</Button>
+                    </Box>
 
-                {message && (
-                    <h3 style={{ fontSize: '0.84em', color: '#202949', textAlign: 'left' }}>
-                        <strong>{message}</strong>
-                    </h3>
-                )}
-            </form>
-        </motion.div>
+                    {message && (
+                        <h3 style={{ fontSize: '0.84em', color: '#202949', textAlign: 'left' }}>
+                            <strong>{message}</strong>
+                        </h3>
+                    )}
+                </form>
+            </motion.div>
+        </ThemeProvider>
     );
 }
