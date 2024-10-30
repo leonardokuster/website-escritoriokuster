@@ -15,6 +15,7 @@ import Typography from '@mui/material/Typography';
 import Loader from '@/src/components/Loader';
 import Button from '@mui/material/Button';
 import styles from '../styles/tabelaUsuarios.module.css';
+import GerenciamentoEmpresas from '../tables/tabelaEmpresas';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -48,10 +49,12 @@ const getTipoUsuario = (tipo) => {
     }
 };
   
-
 export default function UsuariosTable() {
     const [usuarios, setUsuarios] = useState([]);
     const [usuarioSelecionado, setUsuarioSelecionado] = useState(null);
+    const [mostrarEmpresas, setMostrarEmpresas] = useState(false);
+    const [usuarioEmpresas, setUsuarioEmpresas] = useState(null);
+
     const [userType, setUserType] = useState('');
     const [loading, setLoading] = useState(true);
 
@@ -92,10 +95,20 @@ export default function UsuariosTable() {
         fetchUserTypeAndUsuarios();
     }, []);
 
+    const handleVisualizarEmpresas = async (usuario) => {
+        setUsuarioSelecionado(usuario);
+        setMostrarEmpresas(true);
+    };
+
     const handleRevisarClick = (usuario) => {
         setUsuarioSelecionado(usuario);
     };
 
+    const handleShowCompany = (usuario) => {
+        setUsuarioEmpresas(usuario); 
+        setMostrarEmpresas(true); 
+    };
+        
     const handleCancelarEdicao = () => {
         setUsuarioSelecionado(null);
     };
@@ -118,29 +131,41 @@ export default function UsuariosTable() {
 
     return (
         <Box>
-            {usuarioSelecionado ? (
-                <FormularioEdicaoUsuario
-                    usuario={usuarioSelecionado}
-                    onCancelar={handleCancelarEdicao}
-                    onSalvar={handleSalvarEdicao}
-                    userType={userType}
+            {mostrarEmpresas && usuarioEmpresas ? (
+                <GerenciamentoEmpresas 
+                    usuarioSelecionado={usuarioEmpresas.id}
+                    onVisualizarEmpresas={handleVisualizarEmpresas} 
                 />
+            ) : usuarioSelecionado ? (
+                <div>
+                    <FormularioEdicaoUsuario
+                        usuario={usuarioSelecionado}
+                        onCancelar={handleCancelarEdicao}
+                        onSalvar={handleSalvarEdicao}
+                        userType={userType}
+                    />
+                </div>
             ) : (
-                <TabelaUsuarios usuarios={usuarios} onRevisarClick={handleRevisarClick} />
+                <div>
+                    <h1>Clientes cadastrados</h1>
+                    <TabelaUsuarios
+                        usuarios={usuarios}
+                        onRevisarClick={handleRevisarClick}
+                        showCompany={handleShowCompany}
+                    />
+                </div>
             )}
         </Box>
     );
 }
 
-const TabelaUsuarios = ({ usuarios, onRevisarClick }) => (
+const TabelaUsuarios = ({ usuarios, showCompany, onRevisarClick }) => (
     <TableContainer component={Paper}>
         <Table className={styles['tabela']} aria-label="tabela de usuários">
             <TableHead>
                 <TableRow>
-                    <StyledTableCell>Nome</StyledTableCell>
-                    <StyledTableCell align="center" className={styles['esconderMobile']}>CPF</StyledTableCell>
+                    <StyledTableCell align="center">Nome</StyledTableCell>
                     <StyledTableCell align="center" className={styles['esconderMobile']}>E-mail</StyledTableCell>
-                    <StyledTableCell align="center" className={styles['esconderMobile']}>Telefone</StyledTableCell>
                     <StyledTableCell align="center" className={styles['esconderMobile']}>Tipo</StyledTableCell>
                     <StyledTableCell align="center">Ações</StyledTableCell>
                 </TableRow>
@@ -151,15 +176,31 @@ const TabelaUsuarios = ({ usuarios, onRevisarClick }) => (
                         <StyledTableCell component="th" scope="row">
                             {usuario.nome}
                         </StyledTableCell>
-                        <StyledTableCell align="center" className={styles['esconderMobile']}>{usuario.cpf}</StyledTableCell>
                         <StyledTableCell align="center" className={styles['esconderMobile']}>{usuario.emailPessoal}</StyledTableCell>
-                        <StyledTableCell align="center" className={styles['esconderMobile']}>{usuario.telefonePessoal}</StyledTableCell>
                         <StyledTableCell align="center" className={styles['esconderMobile']}>{getTipoUsuario(usuario.tipo)}</StyledTableCell>
-                        <StyledTableCell align="center">
-                            <Button onClick={() => onRevisarClick(usuario)} variant="contained">
-                                Editar
-                            </Button>
-                        </StyledTableCell>
+                        {usuario.qntEmpresas > 1 ? (
+                            <StyledTableCell align="center">
+                                <div className={styles['botoes']}>
+                                    <Button onClick={() => showCompany(usuario)} >
+                                        Empresas
+                                    </Button>
+                                    <Button onClick={() => onRevisarClick(usuario)} variant="contained">
+                                        Editar Usuário
+                                    </Button>
+                                </div>
+                            </StyledTableCell>
+                        ): (
+                            <StyledTableCell align="left">
+                            <div className={styles['botoes']}>
+                                <Button  disabled>
+                                    Empresas
+                                </Button>
+                                <Button onClick={() => onRevisarClick(usuario)} variant="contained">
+                                    Editar Usuário
+                                </Button>
+                            </div>
+                            </StyledTableCell>
+                        )}
                     </StyledTableRow>
                 ))}
             </TableBody>
@@ -265,6 +306,7 @@ TabelaUsuarios.propTypes = {
         tipo: PropTypes.string.isRequired,
     })).isRequired,
     onRevisarClick: PropTypes.func.isRequired,
+    showCompany: PropTypes.func.isRequired,
 };
 
 FormularioEdicaoUsuario.propTypes = {
